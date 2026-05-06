@@ -65,8 +65,9 @@ def eval(value)
   end
 
   if value.is_a? Array
-    return value[1..].sum if value[0] == '+'
-    return value[1..].reduce(:*) if value[0] == '*'
+    args = value[1..].map { |arg| eval(arg) }
+    return args.sum if value[0] == '+'
+    return args.reduce(:*) if value[0] == '*'
   end
 
   raise "unexpected value: #{value}"
