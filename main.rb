@@ -116,6 +116,15 @@ def eval(env, value)
   end
 
   if value.is_a? Array
+    # progn special form
+    if value[0] == :progn
+      res = nil
+      value[1..].each do |v|
+        res = eval(env, v)
+      end
+      return res
+    end
+
     args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
     return f.call(args) if !f.nil?
