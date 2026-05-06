@@ -70,8 +70,23 @@ def compfunc(test)
   end
 end
 
+class Env
+  # @param init - Hash from symbol to lisp value.
+  def initialize(init = {})
+    @v = init
+  end
+
+  def defined?(sym)
+    @v.has_key? sym
+  end
+
+  def find(sym)
+    @v[sym]
+  end
+end
+
 def functions
-  {
+  Env.new({
     :+ => ->(args) { args.sum },
     :- => lambda do |args|
       return -1 * args[0] if args.length == 1
@@ -90,17 +105,17 @@ def functions
     :<= => compfunc(->(a, b) { a <= b }),
     :>= => compfunc(->(a, b) { a >= b }),
     :== => compfunc(->(a, b) { a == b }),
-  }
+  })
 end
 
-def eval(value)
+def eval(env, value)
   if value.is_a? Integer
     return value
   end
 
   if value.is_a? Array
-    args = value[1..].map { |arg| eval(arg) }
-    f = functions[value[0]]
+    args = value[1..].map { |arg| eval(env, arg) }
+    f = env.find(value[0])
     return f.call(args) if !f.nil?
   end
 
@@ -121,5 +136,6 @@ end
 
 line = gets
 value, pos = parse(line, 0)
-result = eval(value)
+env = functions
+result = eval(env, value)
 print result
