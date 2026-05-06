@@ -65,9 +65,8 @@ def eval(value)
   end
 
   if value.is_a? Array
-    if value[0] == '+'
-      return value[1..].sum
-    end
+    return value[1..].sum if value[0] == '+'
+    return value[1..].reduce(:*) if value[0] == '*'
   end
 
   raise "unexpected value: #{value}"
