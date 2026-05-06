@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 def assert(expected, input)
-  got = `echo #{input} | ruby main.rb`.chomp
+  got = `echo '#{input}' | ruby main.rb`.chomp
   if expected != got
     puts "`#{input}` => #{expected} expected but got #{got}"
     exit
@@ -11,3 +11,5 @@ end
 
 assert '13', '13'
 assert '5', ' 5 '
+assert '5', '(+ 3 2)'
+assert '10', '(+ 1 2 3 4)'
