@@ -67,6 +67,13 @@ def functions
       args[0] - args[1..].sum
     end,
     :* => ->(args) { args.reduce(:*) },
+    :/ => lambda do |args|
+      res = args[0]
+      args[1..].each do |arg|
+        res /= arg
+      end
+      res
+    end,
   }
 end
 
