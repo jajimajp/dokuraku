@@ -59,6 +59,13 @@ def parse(input, pos)
   return parse_symbol(input, pos)
 end
 
+def functions
+  {
+    :+ => ->(args) { args.sum },
+    :* => ->(args) { args.reduce(:*) },
+  }
+end
+
 def eval(value)
   if value.is_a? Integer
     return value
@@ -66,8 +73,8 @@ def eval(value)
 
   if value.is_a? Array
     args = value[1..].map { |arg| eval(arg) }
-    return args.sum if value[0] == :+
-    return args.reduce(:*) if value[0] == :*
+    f = functions[value[0]]
+    return f.call(args) if !f.nil?
   end
 
   raise "unexpected value: #{value}"
