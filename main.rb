@@ -86,6 +86,10 @@ def functions
       res
     end,
     :< => compfunc(->(a, b) { a < b }),
+    :> => compfunc(->(a, b) { a > b }),
+    :<= => compfunc(->(a, b) { a <= b }),
+    :>= => compfunc(->(a, b) { a >= b }),
+    :== => compfunc(->(a, b) { a == b }),
   }
 end
 
