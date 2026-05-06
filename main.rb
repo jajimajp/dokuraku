@@ -59,6 +59,17 @@ def parse(input, pos)
   return parse_symbol(input, pos)
 end
 
+# Receives binary op function and convert it into function which
+# receives list arguments.
+def compfunc(test)
+  lambda do |args|
+    for i in 0..args.length-2 do
+      return nil if not test.call(args[i], args[i+1])
+    end
+    return :t
+  end
+end
+
 def functions
   {
     :+ => ->(args) { args.sum },
@@ -74,6 +85,7 @@ def functions
       end
       res
     end,
+    :< => compfunc(->(a, b) { a < b }),
   }
 end
 
