@@ -5,7 +5,7 @@ def isdigit(c)
 end
 
 def skip_spaces(input, pos)
-  pos += 1 while input[pos] == ' '
+  pos += 1 while pos < input.length && (input[pos] == ' ' || input[pos] == "\n")
   return pos
 end
 
@@ -34,7 +34,7 @@ end
 def parse_symbol(input, pos)
   pos = skip_spaces(input, pos)
   s = ''
-  while input[pos] != ' '
+  while pos < input.length && input[pos] != ' ' && input[pos] != "\n"
     s += input[pos]
     pos += 1
   end
@@ -88,10 +88,22 @@ def eval(value)
     return f.call(args) if !f.nil?
   end
 
+  return :t if value.is_a? Symbol and value == :t
+  return nil if value.is_a? Symbol and value == :nil
+
   raise "unexpected value: #{value}"
+end
+
+def print(value)
+  if value.nil?
+    puts "nil"
+    return
+  end
+
+  puts value
 end
 
 line = gets
 value, pos = parse(line, 0)
 result = eval(value)
-puts result
+print result
