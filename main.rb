@@ -85,8 +85,10 @@ class Env
   end
 end
 
-def functions
+def initial_env
   Env.new({
+    :t => :t,
+    :nil => nil,
     :+ => ->(args) { args.sum },
     :- => lambda do |args|
       return -1 * args[0] if args.length == 1
@@ -119,8 +121,7 @@ def eval(env, value)
     return f.call(args) if !f.nil?
   end
 
-  return :t if value.is_a? Symbol and value == :t
-  return nil if value.is_a? Symbol and value == :nil
+  return env.find(value) if env.defined? value
 
   raise "unexpected value: #{value}"
 end
@@ -136,6 +137,5 @@ end
 
 line = gets
 value, pos = parse(line, 0)
-env = functions
-result = eval(env, value)
+result = eval(initial_env, value)
 print result
