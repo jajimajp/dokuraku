@@ -34,7 +34,7 @@ end
 def parse_symbol(input, pos)
   pos = skip_spaces(input, pos)
   s = ''
-  while pos < input.length && input[pos] != ' ' && input[pos] != "\n"
+  while pos < input.length && input[pos] != ' ' && input[pos] != "\n" && input[pos] != ')'
     s += input[pos]
     pos += 1
   end
@@ -83,6 +83,10 @@ class Env
   def find(sym)
     @v[sym]
   end
+
+  def defparameter(sym, val)
+    @v[sym] = val
+  end
 end
 
 def initial_env
@@ -125,9 +129,24 @@ def eval(env, value)
       return res
     end
 
+    # defun special form
+    if value[0] == :defun
+      name = value[1]
+      args = value[2]
+      raise "defun: the second argument is not a list" unless args.is_a? Array
+      raise "defun: arguments are not implemented" if 0 < args.length
+      raise "defun: multiple bodies are not implemented" if 4 < value.length
+      body = value[3]
+      env.defparameter(name, ->() { eval(env, body) })
+      return nil
+    end
+
     args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
-    return f.call(args) if !f.nil?
+    if !f.nil?
+      return f.call(args) if 0 < args.length
+      return f.call()
+    end
   end
 
   return env.find(value) if env.defined? value
