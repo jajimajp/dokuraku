@@ -62,6 +62,10 @@ end
 def functions
   {
     :+ => ->(args) { args.sum },
+    :- => lambda do |args|
+      return -1 * args[0] if args.length == 1
+      args[0] - args[1..].sum
+    end,
     :* => ->(args) { args.reduce(:*) },
   }
 end
