@@ -10,3 +10,4 @@ def assert(expected, input)
 end
 
 assert '13', '13'
+assert '5', ' 5 '
