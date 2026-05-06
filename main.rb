@@ -38,7 +38,7 @@ def parse_symbol(input, pos)
     s += input[pos]
     pos += 1
   end
-  return s, pos
+  return s.to_sym, pos
 end
 
 def parse(input, pos)
@@ -66,8 +66,8 @@ def eval(value)
 
   if value.is_a? Array
     args = value[1..].map { |arg| eval(arg) }
-    return args.sum if value[0] == '+'
-    return args.reduce(:*) if value[0] == '*'
+    return args.sum if value[0] == :+
+    return args.reduce(:*) if value[0] == :*
   end
 
   raise "unexpected value: #{value}"
