@@ -100,3 +100,4 @@ assert_value '"s"', '(string #\s)'
 assert_value 'SYM', '(quote sym)'
 assert_value 'SYM', '(quote SYM)'
 assert_value 'SYM', '\'sym'
+assert_value '"str"', "(concatenate 'string (cons #\\s (cons #\\t (cons #\\r nil))))"

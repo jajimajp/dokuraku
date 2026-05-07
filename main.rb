@@ -258,6 +258,19 @@ def princ(v)
   print v
 end
 
+def concatenate(args)
+  raise "concatenate: other than string is not supported" unless args[0] == :STRING
+
+  s = ""
+  v = args[1]
+  while Cons.is_cons v
+    raise "concatenate: not a char: #{v.l}" unless Char.is_char v.l
+    s += v.l.value
+    v = v.r
+  end
+  s
+end
+
 def initial_env
   Env.new({
     :T => t,
@@ -333,6 +346,7 @@ def initial_env
     end,
     # NOTE: This intern does much less than usual lisp interpreters do.
     :INTERN => ->(args) { args[0].to_sym },
+    :CONCATENATE => ->(args) { concatenate(args) },
   })
 end
 
