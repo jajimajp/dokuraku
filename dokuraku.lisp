@@ -69,25 +69,39 @@
     (read-next)
     ret))
 
+(defun read-list-r ()
+  (progn
+    (skip-spaces)
+    (if (char= #\) *input-char*)
+      (progn (read-next) nil)
+      (cons (read) (read-list-r)))))
+(defun read-list ()
+  (progn
+    (read-next)
+    (read-list-r)))
+
 (defun read ()
   (progn
     (skip-spaces)
     (cond
       ((eofp) nil)
       ((digitp *input-char*) (read-int))
+      ((char= #\( *input-char*) (read-list))
       (t (read-symbol)))))
 
 (defun env:find (sym)
   ; TODO: use assoc list
   (cond
     ((= t sym) t)
-    ((= 'sym sym) 1) ; TODO: debug
     (t nil)))
 
 (defun eval (v)
   (cond
     ((numberp v) v)
     ((symbolp v) (env:find v))
+    ((consp v)
+     (cond ((= '+ (car v)) (+ (car (cdr v)) (car (cdr (cdr v)))))
+           (t nil)))
     (t nil)))
 
 (defun print-value (v)
