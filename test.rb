@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 
 def assert(expected, input)
-  got = `echo '#{input}' | ruby main.rb`.chomp
+  got = IO.popen('ruby main.rb', 'r+') do |io|
+    io.puts input
+    io.close_write
+    io.read.chomp
+  end
   if expected != got
     puts "`#{input}` => #{expected} expected but got #{got}"
     exit
@@ -54,3 +58,4 @@ assert '3', '(progn
   (defparameter x 1)
   (defparameter y 2)
   (+ x y))'
+assert '#\\a', '#\\a' # escaping backslash

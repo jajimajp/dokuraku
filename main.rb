@@ -2,6 +2,7 @@
 
 class Input
   def initialize
+    @eof = nil
     readc
   end
 
@@ -21,6 +22,23 @@ class Input
 
   def eof?
     @eof
+  end
+end
+
+class Char
+  def self.is_char(value)
+    value.is_a?(Char)
+  end
+
+  # represents char as [:char, <string>]
+  def initialize(c)
+    raise "#{c} is not a string" unless c.is_a? String
+    raise "the length is not 1: #{c} " unless c.length == 1
+    @v = [:char, c]
+  end
+
+  def value
+    @v[1]
   end
 end
 
@@ -69,6 +87,17 @@ def parse_symbol(input)
   return s.to_sym
 end
 
+def parse_char(input)
+  # input.c must be '#'
+  input.readc
+  # input.c must be '\'
+  input.readc
+
+  c = input.c
+  input.readc
+  return Char.new(c)
+end
+
 def parse(input)
   skip_spaces(input)
 
@@ -79,6 +108,10 @@ def parse(input)
 
   if input.c == '('
     return parse_list(input)
+  end
+
+  if input.c == '#'
+    return parse_char(input)
   end
 
   return parse_symbol(input)
@@ -154,6 +187,10 @@ def eval(env, value)
     return value
   end
 
+  if Char.is_char value
+    return value
+  end
+
   if value.is_a? Array
     # if special form
     if value[0] == :if
@@ -209,6 +246,11 @@ end
 def print(value)
   if value.nil?
     puts "nil"
+    return
+  end
+
+  if Char.is_char value
+    puts "\#\\#{value.value}"
     return
   end
 
