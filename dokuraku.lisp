@@ -92,13 +92,19 @@
 (defun equal (a b) (= a b))
 (defun lessthan (a b) (< a b))
 
+(defparameter *initial-env*
+  (list (cons 't t)
+        (cons '= equal)
+        (cons '< lessthan)
+  ))
+(defun env:find' (ls sym)
+  (if ls
+    (if (= (car (car ls)) sym)
+      (cdr (car ls))
+      (env:find' (cdr ls) sym))
+    nil))
 (defun env:find (sym)
-  ; TODO: use assoc list
-  (cond
-    ((= t sym) t)
-    ((= '= sym) equal)
-    ((= '< sym) lessthan)
-    (t nil)))
+  (env:find' *initial-env* sym))
 
 (defun sum (ls)
   (if ls
