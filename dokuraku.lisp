@@ -117,6 +117,7 @@
     ((consp v)
      (cond ((= '+ (car v)) (sum (cdr (eval-list-elems v))))
            ((= '* (car v)) (multiply (cdr (eval-list-elems v))))
+           ((= '= (car v)) (= (eval (cadr v)) (eval (caddr v))))
            (t nil)))
     (t nil)))
 
