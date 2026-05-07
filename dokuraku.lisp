@@ -1,6 +1,6 @@
 ; A Lisp interpreter
 
-(defun char-is-number? (c)
+(defun digitp (c)
   (cond ((char= c #\1) t)
         ((char= c #\2) t)
         ((char= c #\3) t)
@@ -27,11 +27,11 @@
 (defun read-next ()
   (setf *input-char* (read-char nil)))
 (read-next) ; Read the first character
-(defun eof? () (not *input-char*))
+(defun eofp () (not *input-char*))
 
 (defun skip-spaces ()
   (cond
-    ((eof?) nil)
+    ((eofp) nil)
     ((char= *input-char* #\ ) (progn (read-next) (skip-spaces)))
     ((char= *input-char* #\Newline) (progn (read-next) (skip-spaces)))
     (t nil)))
@@ -39,8 +39,8 @@
 (defun read-int' (n)
   (progn
     (read-next)
-    (if (not (eof?))
-      (if (char-is-number? *input-char*)
+    (if (not (eofp))
+      (if (digitp *input-char*)
         (read-int' (+ (* 10 n) (char-to-number *input-char*)))
         n)
       n)))
@@ -52,8 +52,8 @@
   (progn
     (skip-spaces)
     (cond
-      ((eof?) nil)
-      ((char-is-number? *input-char*) (read-int))
+      ((eofp) nil)
+      ((digitp *input-char*) (read-int))
       (t nil))))
 
 (defun loop ()
