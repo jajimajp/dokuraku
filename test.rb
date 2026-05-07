@@ -106,3 +106,4 @@ assert_value 'nil', '(consp 2)'
 assert_value '2', '(cadr (cons 1 (cons 2 nil)))'
 assert_value '3', '(caddr (cons 1 (cons 2 (cons 3 nil))))'
 assert_value '(1 . (2 . (3)))', '(list 1 2 3)'
+assert '3', "(defun add (x y) (+ x y)) (princ (apply #'add (cons 1 (cons 2 nil))))"

@@ -106,8 +106,8 @@ def parse_symbol(input)
 end
 
 def parse_char(input)
-  # input.c must be '#'
-  input.readc
+  # This assumes that input.c is on '\' (not on '#')
+
   # input.c must be '\'
   input.readc
 
@@ -177,7 +177,16 @@ def parse(input)
   end
 
   if input.c == '#'
-    return parse_char(input)
+    input.readc
+    if input.c == "'"
+      # NOTE: In this interpreter, functions and variables are put in the same
+      # environment. This does not become a problem unless the same name used
+      # for both variables and functions.
+      input.readc
+      return parse_symbol(input)
+    else
+      return parse_char(input)
+    end
   end
 
   if input.c == "'"
@@ -269,6 +278,15 @@ def concatenate(args)
     v = v.r
   end
   s
+end
+
+def dest_list(ls)
+  res = []
+  while Cons.is_cons ls
+    res << ls.l
+    ls = ls.r
+  end
+  res
 end
 
 def initial_env
@@ -368,6 +386,10 @@ def initial_env
         res = Cons.new(arg, res)
       end
       res
+    end,
+    :APPLY => lambda do |args|
+      f = args[0]
+      f.call(dest_list args[1])
     end,
   })
 end
