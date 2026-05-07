@@ -102,7 +102,7 @@ def parse_symbol(input)
     s += input.c
     input.readc
   end
-  return s.to_sym
+  return s.upcase.to_sym
 end
 
 def parse_char(input)
@@ -254,18 +254,18 @@ end
 
 def initial_env
   Env.new({
-    :t => t,
-    :nil => nil,
-    :cons => ->(args) { Cons.new(args[0], args[1]) },
-    :car => lambda do |args|
+    :T => t,
+    :NIL => nil,
+    :CONS => ->(args) { Cons.new(args[0], args[1]) },
+    :CAR => lambda do |args|
       raise "car: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
       args[0].l
     end,
-    :cdr => lambda do |args|
+    :CDR => lambda do |args|
       raise "cdr: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
       args[0].r
     end,
-    :not => lambda do |args|
+    :NOT => lambda do |args|
       if args[0].nil?
         t
       else
@@ -290,8 +290,8 @@ def initial_env
     :<= => compfunc(->(a, b) { a <= b }),
     :>= => compfunc(->(a, b) { a >= b }),
     :"=" => compfunc(->(a, b) { a == b }),
-    :char= => compfunc(->(a, b) { a.value == b.value }),
-    :"read-char" => lambda do |args|
+    :CHAR= => compfunc(->(a, b) { a.value == b.value }),
+    :"READ-CHAR" => lambda do |args|
       c = STDIN.getc
       return Char.new(c) unless c.nil?
       if args.length == 1 && args[0] == nil # nil specified
@@ -300,11 +300,11 @@ def initial_env
         raise "read-char: EOF"
       end
     end,
-    :"write-char" => lambda do |args|
+    :"WRITE-CHAR" => lambda do |args|
       raise "write-char: not a char: #{args[0]}" unless Char.is_char args[0]
       putc args[0].value
     end,
-    :write => lambda do |args|
+    :WRITE => lambda do |args|
       if Char.is_char args[0]
         putc args[0].value
         return
@@ -315,18 +315,18 @@ def initial_env
       end
       puts args
     end,
-    :princ => lambda do |args|
+    :PRINC => lambda do |args|
       princ args[0]
     end,
-    :numberp => ->(args) { if args[0].is_a? Integer then t else nil end },
-    :symbolp => ->(args) { if args[0].is_a? Symbol then t else nil end },
-    :"string-upcase" => ->(args) { args[0].upcase },
-    :string => lambda do |args|
+    :NUMBERP => ->(args) { if args[0].is_a? Integer then t else nil end },
+    :SYMBOLP => ->(args) { if args[0].is_a? Symbol then t else nil end },
+    :"STRING-UPCASE" => ->(args) { args[0].upcase },
+    :STRING => lambda do |args|
       return args[0].value.to_s if Char.is_char args[0]
       args[0].to_s
     end,
     # NOTE: This intern does much less than usual lisp interpreters do.
-    :intern => ->(args) { args[0].to_sym },
+    :INTERN => ->(args) { args[0].to_sym },
   })
 end
 
@@ -344,8 +344,13 @@ def eval(env, value)
   end
 
   if value.is_a? Array
+    # quote special form
+    if value[0] == :QUOTE
+      return value[1]
+    end
+
     # if special form
-    if value[0] == :if
+    if value[0] == :IF
       cond = eval(env, value[1])
       unless cond.nil?
         return eval(env, value[2]) # true clause
@@ -354,7 +359,7 @@ def eval(env, value)
     end
 
     # cond special form
-    if value[0] == :cond
+    if value[0] == :COND
       value[1..].each do |v|
         cond = eval(env, v[0])
         return eval(env, v[1]) unless cond.nil?
@@ -363,7 +368,7 @@ def eval(env, value)
     end
 
     # progn special form
-    if value[0] == :progn
+    if value[0] == :PROGN
       res = nil
       value[1..].each do |v|
         res = eval(env, v)
@@ -372,7 +377,7 @@ def eval(env, value)
     end
 
     # defparameter special form
-    if value[0] == :defparameter
+    if value[0] == :DEFPARAMETER
       k = value[1]
       v = eval(env, value[2])
       env.defparameter(k, v)
@@ -380,7 +385,7 @@ def eval(env, value)
     end
 
     # setf special form
-    if value[0] == :setf
+    if value[0] == :SETF
       k = value[1]
       v = eval(env, value[2])
       env.setf(k, v)
@@ -388,7 +393,7 @@ def eval(env, value)
     end
 
     # defun special form
-    if value[0] == :defun
+    if value[0] == :DEFUN
       name = value[1]
       arg_vars = value[2]
       raise "defun: the second argument is not a list" unless arg_vars.is_a? Array
