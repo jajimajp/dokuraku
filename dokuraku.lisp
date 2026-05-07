@@ -33,9 +33,7 @@
   (cond
     ((eof?) nil)
     ((char= *input-char* #\ ) (progn (read-next) (skip-spaces)))
-    ; HACK: Below newline character specifies `\n`.
-    ((char= *input-char* #\
-            ) (progn (read-next) (skip-spaces)))
+    ((char= *input-char* #\Newline) (progn (read-next) (skip-spaces)))
     (t nil)))
 
 (defun read-int' (n)

@@ -96,6 +96,18 @@ def parse_char(input)
 
   c = input.c
   input.readc
+
+  # Maybe #\Newline
+  if c == 'N'
+    # Determine by the 2nd character.
+    # If it is true, the rest must be 'wline'
+    if input.c == 'e'
+      ('Newline'.length - 'N'.length).times do
+        input.readc
+      end
+    end
+    return Char.new("\n")
+  end
   return Char.new(c)
 end
 
@@ -357,6 +369,10 @@ def print(value)
   end
 
   if Char.is_char value
+    if value.value == "\n"
+      puts "\#\\Newline"
+      return
+    end
     puts "\#\\#{value.value}"
     return
   end
