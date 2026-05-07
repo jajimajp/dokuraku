@@ -23,22 +23,29 @@
         ((char= c #\8) 8)
         ((char= c #\9) 9)))
 
-(defun read-int (n)
+(defparameter *input-char* nil)
+(defun read-next ()
+  (setf *input-char* (read-char nil)))
+(defun eof? () (not *input-char*))
+
+(defun read-int' (n)
   (progn
-    (defparameter c (read-char nil))
-    (if c
-      (if (char-is-number? c)
-        (read-int (+ (* 10 n) (char-to-number c)))
+    (read-next)
+    (if (not (eof?))
+      (if (char-is-number? *input-char*)
+        (read-int' (+ (* 10 n) (char-to-number *input-char*)))
         n)
       n)))
 
+(defun read-int ()
+  (read-int' (char-to-number *input-char*)))
 
 (defun loop ()
   (progn
-    (defparameter c (read-char nil))
-    (if c
+    (read-next)
+    (if (not (eof?))
       (progn
-        (if (char-is-number? c) (write (read-int (char-to-number c))) nil)
+        (if (char-is-number? *input-char*) (write (read-int)) nil)
         (loop))
       nil)))
 
