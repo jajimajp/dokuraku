@@ -66,12 +66,12 @@ assert_value '3', '(progn
   (+ x y))'
 assert_value '#\\a', '#\\a' # escaping backslash
 
-assert 'a', '(putc #\\a)' # escaping backslash
+assert 'a', '(write-char #\\a)' # escaping backslash
 assert '123', '(write 123)'
 assert '123', '; A comment
 (; Comment in a list
 write 123)'
-assert 'ab', '(putc #\\a) (putc #\\b)' # escaping backslash
+assert 'ab', '(write-char #\\a) (write-char #\\b)' # escaping backslash
 assert_value '"str"', '"str"'
 assert '"str"', '(write "str")'
 assert 'str', '(princ "str")'

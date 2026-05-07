@@ -216,8 +216,8 @@ def initial_env
     :<= => compfunc(->(a, b) { a <= b }),
     :>= => compfunc(->(a, b) { a >= b }),
     :== => compfunc(->(a, b) { a == b }),
-    :putc => lambda do |args|
-      raise "putc: not a char: #{args[0]}" unless Char.is_char args[0]
+    :"write-char" => lambda do |args|
+      raise "write-char: not a char: #{args[0]}" unless Char.is_char args[0]
       putc args[0].value
     end,
     :write => lambda do |args|
