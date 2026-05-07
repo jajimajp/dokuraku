@@ -50,10 +50,10 @@
 
 (defun read-symbol ()
   ; TODO: multiple characters
-  ; TODO: use intern
-  (if (char= #\t *input-char*)
-    (progn (read-next) t)
-    (progn (read-next) nil)))
+  (progn
+    (defparameter ret (intern (string-upcase (string *input-char*))))
+    (read-next)
+    ret))
 
 (defun read ()
   (progn
