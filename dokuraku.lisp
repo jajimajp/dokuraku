@@ -48,17 +48,31 @@
 (defun read-int ()
   (read-int' (char-to-number *input-char*)))
 
+(defun read-symbol ()
+  ; TODO: multiple characters
+  ; TODO: use intern
+  (if (char= #\t *input-char*)
+    (progn (read-next) t)
+    (progn (read-next) nil)))
+
 (defun read ()
   (progn
     (skip-spaces)
     (cond
       ((eofp) nil)
       ((digitp *input-char*) (read-int))
-      (t nil))))
+      (t (read-symbol)))))
+
+(defun env:find (sym)
+  ; TODO: use assoc list
+  (cond
+    ((= t sym) t)
+    (t nil)))
 
 (defun eval (v)
   (cond
     ((numberp v) v)
+    ((symbolp v) (env:find v))
     (t nil)))
 
 (defun loop ()
