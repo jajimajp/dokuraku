@@ -74,3 +74,6 @@ write 123)'
 assert 'ab', '(putc #\\a) (putc #\\b)' # escaping backslash
 assert_value '"str"', '"str"'
 assert '"str"', '(write "str")'
+assert 'str', '(princ "str")'
+assert 'C', '(princ #\C)' # escaping backslash
+assert '1', '(princ 1)'

@@ -231,6 +231,13 @@ def initial_env
       end
       puts args
     end,
+    :princ => lambda do |args|
+      if Char.is_char args[0]
+        putc args[0].value
+        return
+      end
+      puts args[0]
+    end,
   })
 end
 
