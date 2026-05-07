@@ -284,6 +284,20 @@ def initial_env
       raise "cdr: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
       args[0].r
     end,
+    :CADR => lambda do |args|
+      raise "cadr: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
+      cdr = args[0].r
+      raise "cadr: given value is not a cons cell: #{cdr}" unless Cons.is_cons cdr
+      cdr.l
+    end,
+    :CADDR => lambda do |args|
+      raise "caddr: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
+      cdr = args[0].r
+      raise "caddr: given value is not a cons cell: #{cdr}" unless Cons.is_cons cdr
+      cddr = cdr.r
+      raise "caddr: given value is not a cons cell: #{cddr}" unless Cons.is_cons cddr
+      cddr.l
+    end,
     :NOT => lambda do |args|
       if args[0].nil?
         t
