@@ -233,6 +233,14 @@ def initial_env
     :t => :t,
     :nil => nil,
     :cons => ->(args) { Cons.new(args[0], args[1]) },
+    :car => lambda do |args|
+      raise "car: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
+      args[0].l
+    end,
+    :cdr => lambda do |args|
+      raise "cdr: given value is not a cons cell: #{args[0]}" unless Cons.is_cons args[0]
+      args[0].r
+    end,
     :not => lambda do |args|
       if args[0].nil?
         :t
