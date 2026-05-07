@@ -89,10 +89,15 @@
       ((char= #\( *input-char*) (read-list))
       (t (read-symbol)))))
 
+(defun equal (a b) (= a b))
+(defun lessthan (a b) (< a b))
+
 (defun env:find (sym)
   ; TODO: use assoc list
   (cond
     ((= t sym) t)
+    ((= '= sym) equal)
+    ((= '< sym) lessthan)
     (t nil)))
 
 (defun sum (ls)
@@ -115,11 +120,9 @@
     ((numberp v) v)
     ((symbolp v) (env:find v))
     ((consp v)
-     (cond ((= '+ (car v)) (sum (cdr (eval-list-elems v))))
-           ((= '* (car v)) (multiply (cdr (eval-list-elems v))))
-           ((= '= (car v)) (= (eval (cadr v)) (eval (caddr v))))
-           ((= '< (car v)) (< (eval (cadr v)) (eval (caddr v))))
-           (t nil)))
+     (cond ((= '+ (car v)) (sum (eval-list-elems (cdr v))))
+           ((= '* (car v)) (multiply (eval-list-elems (cdr v))))
+           (t (apply (env:find (car v)) (eval-list-elems (cdr v))))))
     (t nil)))
 
 (defun print-value (v)
