@@ -1,17 +1,18 @@
 #!/usr/bin/env ruby
 
 class Input
-  def initialize
+  def initialize(stream = STDIN)
+    @stream = stream
     @eof = nil
     readc
   end
 
   def readc
     @c = ''
-    if STDIN.eof?
+    if @stream.eof?
       @eof = true
     else
-      @c = STDIN.getc
+      @c = @stream.getc
     end
   end
 
