@@ -339,6 +339,7 @@ def initial_env
     end,
     :NUMBERP => ->(args) { if args[0].is_a? Integer then t else nil end },
     :SYMBOLP => ->(args) { if args[0].is_a? Symbol then t else nil end },
+    :CONSP => ->(args) { if Cons.is_cons args[0] then t else nil end },
     :"STRING-UPCASE" => ->(args) { args[0].upcase },
     :STRING => lambda do |args|
       return args[0].value.to_s if Char.is_char args[0]

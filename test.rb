@@ -101,3 +101,5 @@ assert_value 'SYM', '(quote sym)'
 assert_value 'SYM', '(quote SYM)'
 assert_value 'SYM', '\'sym'
 assert_value '"str"', "(concatenate 'string (cons #\\s (cons #\\t (cons #\\r nil))))"
+assert_value 'T', '(consp (cons 1 2))'
+assert_value 'nil', '(consp 2)'
