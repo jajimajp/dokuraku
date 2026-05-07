@@ -314,6 +314,7 @@ def initial_env
     :princ => lambda do |args|
       princ args[0]
     end,
+    :numberp => ->(args) { if args[0].is_a? Integer then :t else nil end },
   })
 end
 
