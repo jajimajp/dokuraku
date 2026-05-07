@@ -130,6 +130,15 @@ def eval(env, value)
   end
 
   if value.is_a? Array
+    # if special form
+    if value[0] == :if
+      cond = eval(env, value[1])
+      unless cond.nil?
+        return eval(env, value[2]) # true clause
+      end
+      return eval(env, value[3]) # false clause
+    end
+
     # progn special form
     if value[0] == :progn
       res = nil
