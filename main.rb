@@ -317,6 +317,8 @@ def initial_env
     :numberp => ->(args) { if args[0].is_a? Integer then :t else nil end },
     :symbolp => ->(args) { if args[0].is_a? Symbol then :t else nil end },
     :"string-upcase" => ->(args) { args[0].upcase },
+    # NOTE: This intern does much less than usual lisp interpreters do.
+    :intern => ->(args) { args[0].to_sym },
   })
 end
 
