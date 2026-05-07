@@ -1,8 +1,9 @@
-(progn
-  (defun fibonacci (n)
-    (if (< n 3)
-      1
-      (+ (fibonacci (- n 1))
-         (fibonacci (- n 2)))))
+; Calculates the 10th fibonacci number.
 
-  (write (fibonacci 10)))
+(defun fibonacci (n)
+  (if (< n 3)
+    1
+    (+ (fibonacci (- n 1))
+       (fibonacci (- n 2)))))
+
+(write (fibonacci 10))

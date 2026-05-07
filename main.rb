@@ -110,6 +110,8 @@ end
 def parse(input)
   skip_spaces(input)
 
+  return nil if input.eof?
+
   if input.c == ';'
     consume_to_newline(input)
     return parse(input)
@@ -297,6 +299,11 @@ else
   f = File.open(file, 'r')
   Input.new(f)
 end
-value = parse input
-result = eval(initial_env, value)
-print result if print_value
+
+env = initial_env
+loop do
+  value = parse input
+  break if value.nil?
+  result = eval(env, value)
+  print result if print_value
+end

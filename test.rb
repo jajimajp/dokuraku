@@ -71,3 +71,4 @@ assert '123', '(write 123)'
 assert '123', '; A comment
 (; Comment in a list
 write 123)'
+assert 'ab', '(putc #\\a) (putc #\\b)' # escaping backslash
