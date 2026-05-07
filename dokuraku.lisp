@@ -100,6 +100,11 @@
     (+ (car ls) (sum (cdr ls)))
     0))
 
+(defun multiply (ls)
+  (if ls
+    (* (car ls) (multiply (cdr ls)))
+    1))
+
 (defun eval-list-elems (ls)
   (if ls
     (cons (eval (car ls)) (eval-list-elems (cdr ls)))
@@ -111,6 +116,7 @@
     ((symbolp v) (env:find v))
     ((consp v)
      (cond ((= '+ (car v)) (sum (cdr (eval-list-elems v))))
+           ((= '* (car v)) (multiply (cdr (eval-list-elems v))))
            (t nil)))
     (t nil)))
 
