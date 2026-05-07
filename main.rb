@@ -228,6 +228,26 @@ class Env
   end
 end
 
+def princ(v)
+  if Char.is_char v
+    print v.value
+    return
+  end
+  if Cons.is_cons v
+    print '('
+    princ v.l
+    if v.r.nil?
+      print ')'
+    else
+      print ' . '
+      princ v.r
+      print ')'
+    end
+    return
+  end
+  print v
+end
+
 def initial_env
   Env.new({
     :t => :t,
@@ -292,11 +312,7 @@ def initial_env
       puts args
     end,
     :princ => lambda do |args|
-      if Char.is_char args[0]
-        putc args[0].value
-        return
-      end
-      puts args[0]
+      princ args[0]
     end,
   })
 end
