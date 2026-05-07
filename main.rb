@@ -184,6 +184,13 @@ def initial_env
       raise "putc: not a char: #{args[0]}" unless Char.is_char args[0]
       putc args[0].value
     end,
+    :write => lambda do |args|
+      if Char.is_char args[0]
+        putc args[0].value
+        return
+      end
+      puts args
+    end,
   })
 end
 
@@ -262,6 +269,21 @@ def print(value)
   puts value
 end
 
-value = parse Input.new
+print_value = false
+file = ''
+ARGV.each do |arg|
+  if arg == '--print-value'
+    print_value = arg
+    next
+  end
+  file = arg
+end
+input = if file == ''
+  Input.new
+else
+  f = File.open(file, 'r')
+  Input.new(f)
+end
+value = parse input
 result = eval(initial_env, value)
-print result if ARGV[0] == '--print-value'
+print result if print_value

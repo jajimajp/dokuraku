@@ -67,3 +67,4 @@ assert_value '3', '(progn
 assert_value '#\\a', '#\\a' # escaping backslash
 
 assert 'a', '(putc #\\a)' # escaping backslash
+assert '123', '(write 123)'
