@@ -315,6 +315,7 @@ def initial_env
       princ args[0]
     end,
     :numberp => ->(args) { if args[0].is_a? Integer then :t else nil end },
+    :symbolp => ->(args) { if args[0].is_a? Symbol then :t else nil end },
   })
 end
 
