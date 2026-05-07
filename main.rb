@@ -43,6 +43,19 @@ class Char
   end
 end
 
+class Cons
+  attr_reader :l, :r
+
+  def self.is_cons(value)
+    value.is_a?(Cons)
+  end
+
+  def initialize(l, r)
+    @l = l
+    @r = r
+  end
+end
+
 def isdigit(c)
   c.ord.between?('0'.ord, '9'.ord)
 end
@@ -219,6 +232,7 @@ def initial_env
   Env.new({
     :t => :t,
     :nil => nil,
+    :cons => ->(args) { Cons.new(args[0], args[1]) },
     :not => lambda do |args|
       if args[0].nil?
         :t
@@ -362,34 +376,47 @@ def eval(env, value)
   raise "unexpected value: #{value}"
 end
 
-def print(value)
+def print_value(value)
   if value.nil?
-    puts "nil"
+    print "nil"
     return
   end
 
   if Char.is_char value
     if value.value == "\n"
-      puts "\#\\Newline"
+      print "\#\\Newline"
       return
     end
-    puts "\#\\#{value.value}"
+    print "\#\\#{value.value}"
+    return
+  end
+
+  if Cons.is_cons value
+    print '('
+    print_value value.l
+    if value.r.nil?
+      print ')'
+    else
+      print ' . '
+      print_value value.r
+      print ')'
+    end
     return
   end
 
   if value.is_a? String
-    p value
+    print "\"#{value}\""
     return
   end
 
-  puts value
+  print value
 end
 
-print_value = false
+print_value_enabled = false
 file = ''
 ARGV.each do |arg|
   if arg == '--print-value'
-    print_value = arg
+    print_value_enabled = arg
     next
   end
   file = arg
@@ -406,5 +433,8 @@ loop do
   value = parse input
   break if value.nil?
   result = eval(env, value)
-  print result if print_value
+  if print_value_enabled
+    print_value result
+    puts ""
+  end
 end
