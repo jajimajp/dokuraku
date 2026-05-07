@@ -50,3 +50,7 @@ assert '8', '(progn
        1
        (+ (fib (- n 1)) (fib (- n 2)))))
   (fib 6))'
+assert '3', '(progn
+  (defparameter x 1)
+  (defparameter y 2)
+  (+ x y))'

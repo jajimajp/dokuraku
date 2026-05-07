@@ -173,6 +173,14 @@ def eval(env, value)
       return res
     end
 
+    # defparameter special form
+    if value[0] == :defparameter
+      k = value[1]
+      v = eval(env, value[2])
+      env.defparameter(k, v)
+      return nil
+    end
+
     # defun special form
     if value[0] == :defun
       name = value[1]
