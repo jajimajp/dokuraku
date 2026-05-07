@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+def t
+  :T
+end
+
 class Input
   def initialize(stream = STDIN)
     @stream = stream
@@ -186,7 +190,7 @@ def compfunc(test)
     for i in 0..args.length-2 do
       return nil if not test.call(args[i], args[i+1])
     end
-    return :t
+    return t
   end
 end
 
@@ -250,7 +254,7 @@ end
 
 def initial_env
   Env.new({
-    :t => :t,
+    :t => t,
     :nil => nil,
     :cons => ->(args) { Cons.new(args[0], args[1]) },
     :car => lambda do |args|
@@ -263,7 +267,7 @@ def initial_env
     end,
     :not => lambda do |args|
       if args[0].nil?
-        :t
+        t
       else
         nil
       end
@@ -314,8 +318,8 @@ def initial_env
     :princ => lambda do |args|
       princ args[0]
     end,
-    :numberp => ->(args) { if args[0].is_a? Integer then :t else nil end },
-    :symbolp => ->(args) { if args[0].is_a? Symbol then :t else nil end },
+    :numberp => ->(args) { if args[0].is_a? Integer then t else nil end },
+    :symbolp => ->(args) { if args[0].is_a? Symbol then t else nil end },
     :"string-upcase" => ->(args) { args[0].upcase },
     :string => lambda do |args|
       return args[0].value.to_s if Char.is_char args[0]
