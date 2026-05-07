@@ -40,10 +40,10 @@ assert_value 'nil', '(> 1 2)'
 assert_value 't', '(> 2 1)'
 assert_value 't', '(<= 1 2 3)'
 assert_value 'nil', '(>= 1 2 1)'
-assert_value 't', '(== 1 1)'
-assert_value 'nil', '(== 1 2)'
-assert_value 't', '(== 1 1 1)'
-assert_value 'nil', '(== 1 1 (+ 1 1))'
+assert_value 't', '(= 1 1)'
+assert_value 'nil', '(= 1 2)'
+assert_value 't', '(= 1 1 1)'
+assert_value 'nil', '(= 1 1 (+ 1 1))'
 assert_value '5', '(progn
   (+ 1 1)
   (+ 2 3)
@@ -52,7 +52,7 @@ assert_value '2', '(progn (defun f () (+ 1 1)) (f))'
 assert_value '3', '(progn (defun s (x) (+ 1 x)) (s 2))'
 assert_value '3', '(progn (defun add (x y) (+ x y)) (add 1 2))'
 assert_value '1', '(if (< 1 2) 1 2)'
-assert_value '2', '(if (== 1 2) 1 2)'
+assert_value '2', '(if (= 1 2) 1 2)'
 assert_value '120', '(progn (defun fact (n) (if (<= n 0) 1 (* n (fact (- n 1))))) (fact 5))'
 assert_value '8', '(progn
   (defun fib (n)
