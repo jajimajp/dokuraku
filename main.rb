@@ -179,6 +179,10 @@ def initial_env
     :<= => compfunc(->(a, b) { a <= b }),
     :>= => compfunc(->(a, b) { a >= b }),
     :== => compfunc(->(a, b) { a == b }),
+    :putc => lambda do |args|
+      raise "putc: not a char: #{args[0]}" unless Char.is_char args[0]
+      putc args[0].value
+    end,
   })
 end
 
@@ -259,4 +263,4 @@ end
 
 value = parse Input.new
 result = eval(initial_env, value)
-print result
+print result if ARGV[0] == '--print-value'
