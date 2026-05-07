@@ -189,6 +189,15 @@ class Env
     @fallback.defparameter(sym, val)
   end
 
+  def setf(sym, val)
+    raise "setf: variable not defined: #{sym}" unless has? sym
+    if @v.has_key?(sym)
+      @v[sym] = val
+      return
+    end
+    @fallback.setf(sym, val)
+  end
+
   def to_s
     @v.to_s
   end
@@ -297,6 +306,14 @@ def eval(env, value)
       k = value[1]
       v = eval(env, value[2])
       env.defparameter(k, v)
+      return nil
+    end
+
+    # setf special form
+    if value[0] == :setf
+      k = value[1]
+      v = eval(env, value[2])
+      env.setf(k, v)
       return nil
     end
 
