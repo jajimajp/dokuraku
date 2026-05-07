@@ -1,62 +1,87 @@
 #!/usr/bin/env ruby
 
+class Input
+  def initialize
+    readc
+  end
+
+  def readc
+    @c = ''
+    if STDIN.eof?
+      @eof = true
+    else
+      @c = STDIN.getc
+    end
+  end
+
+  def c
+    # Current reading character.
+    @c
+  end
+
+  def eof?
+    @eof
+  end
+end
+
 def isdigit(c)
   c.ord.between?('0'.ord, '9'.ord)
 end
 
-def skip_spaces(input, pos)
-  pos += 1 while pos < input.length && (input[pos] == ' ' || input[pos] == "\n")
-  return pos
+def skip_spaces(input)
+  input.readc while !input.eof? && (input.c == ' ' || input.c == "\n")
 end
 
-def parse_int(input, pos)
+def parse_int(input)
   s = ''
-  while isdigit(input[pos]) do
-    s += input[pos]
-    pos += 1
+  while isdigit(input.c) do
+    s += input.c
+    input.readc
   end
-  return s.to_i, pos
+  return s.to_i
 end
 
-def parse_list(input, pos)
+def parse_list(input)
   list = []
-  # input[pos] Must be '('
-  pos += 1
+  # input.c must be '('
+  input.readc
 
-  while input[pos] != ')' do
-    pos = skip_spaces(input, pos)
-    parsed, pos = parse(input, pos)
+  skip_spaces(input)
+  while input.c != ')' do
+    parsed = parse(input)
     list << parsed
+    skip_spaces(input)
   end
-  return list, pos+1
+
+  # input.c must be ')'
+  input.readc
+
+  return list
 end
 
-def parse_symbol(input, pos)
-  pos = skip_spaces(input, pos)
+def parse_symbol(input)
+  skip_spaces(input)
   s = ''
-  while pos < input.length && input[pos] != ' ' && input[pos] != "\n" && input[pos] != ')'
-    s += input[pos]
-    pos += 1
+  while !input.eof? && input.c != ' ' && input.c != "\n" && input.c != ')'
+    s += input.c
+    input.readc
   end
-  return s.to_sym, pos
+  return s.to_sym
 end
 
-def parse(input, pos)
-  return nil, pos if input.length <= pos
+def parse(input)
+  skip_spaces(input)
 
-  pos = skip_spaces(input, pos)
-  c = input[pos]
-
-  if isdigit(c)
-    v, pos = parse_int(input, pos)
-    return v, pos
+  if isdigit(input.c)
+    v = parse_int(input)
+    return v
   end
 
-  if c == '('
-    return parse_list(input, pos)
+  if input.c == '('
+    return parse_list(input)
   end
 
-  return parse_symbol(input, pos)
+  return parse_symbol(input)
 end
 
 # Receives binary op function and convert it into function which
@@ -182,7 +207,6 @@ def print(value)
   puts value
 end
 
-line = gets
-value, pos = parse(line, 0)
+value = parse Input.new
 result = eval(initial_env, value)
 print result

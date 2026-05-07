@@ -34,11 +34,19 @@ assert 't', '(== 1 1)'
 assert 'nil', '(== 1 2)'
 assert 't', '(== 1 1 1)'
 assert 'nil', '(== 1 1 (+ 1 1))'
-assert '5', '(progn (+ 1 1) (+ 2 3))'
+assert '5', '(progn
+  (+ 1 1)
+  (+ 2 3)
+)'
 assert '2', '(progn (defun f () (+ 1 1)) (f))'
 assert '3', '(progn (defun s (x) (+ 1 x)) (s 2))'
 assert '3', '(progn (defun add (x y) (+ x y)) (add 1 2))'
 assert '1', '(if (< 1 2) 1 2)'
 assert '2', '(if (== 1 2) 1 2)'
 assert '120', '(progn (defun fact (n) (if (<= n 0) 1 (* n (fact (- n 1))))) (fact 5))'
-assert '8', '(progn (defun fib (n) (if (< n 3) 1 (+ (fib (- n 1)) (fib (- n 2))))) (fib 6))'
+assert '8', '(progn
+  (defun fib (n)
+    (if (< n 3)
+       1
+       (+ (fib (- n 1)) (fib (- n 2)))))
+  (fib 6))'
