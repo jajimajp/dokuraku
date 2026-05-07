@@ -56,11 +56,16 @@
       ((digitp *input-char*) (read-int))
       (t nil))))
 
+(defun eval (v)
+  (cond
+    ((numberp v) v)
+    (t nil)))
+
 (defun loop ()
   (progn
     (defparameter v (read))
     (if v
-      (progn (write v) (loop))
+      (progn (write (eval v)) (loop))
       nil)))
 
 (loop)
