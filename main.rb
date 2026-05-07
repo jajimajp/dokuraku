@@ -216,6 +216,15 @@ def initial_env
     :<= => compfunc(->(a, b) { a <= b }),
     :>= => compfunc(->(a, b) { a >= b }),
     :== => compfunc(->(a, b) { a == b }),
+    :"read-char" => lambda do |args|
+      c = STDIN.getc
+      return Char.new(c) unless c.nil?
+      if args.length == 1 && args[0] == nil # nil specified
+        return nil
+      else
+        raise "read-char: EOF"
+      end
+    end,
     :"write-char" => lambda do |args|
       raise "write-char: not a char: #{args[0]}" unless Char.is_char args[0]
       putc args[0].value
@@ -299,6 +308,7 @@ def eval(env, value)
     args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
     return f.call(args) if !f.nil?
+    raise "eval: unknown symbol: #{value[0]}"
   end
 
   return env.find(value) if env.has? value
