@@ -77,3 +77,4 @@ assert '"str"', '(write "str")'
 assert 'str', '(princ "str")'
 assert 'C', '(princ #\C)' # escaping backslash
 assert '1', '(princ 1)'
+assert_value '2', '(cond ((< 1 1) 1) ((= 1 1) 2) (t 3))'

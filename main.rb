@@ -273,6 +273,15 @@ def eval(env, value)
       return eval(env, value[3]) # false clause
     end
 
+    # cond special form
+    if value[0] == :cond
+      value[1..].each do |v|
+        cond = eval(env, v[0])
+        return eval(env, v[1]) unless cond.nil?
+      end
+      return nil
+    end
+
     # progn special form
     if value[0] == :progn
       res = nil
