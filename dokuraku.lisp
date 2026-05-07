@@ -95,12 +95,17 @@
     ((= t sym) t)
     (t nil)))
 
+(defun sum (ls)
+  (if ls
+    (+ (car ls) (sum (cdr ls)))
+    0))
+
 (defun eval (v)
   (cond
     ((numberp v) v)
     ((symbolp v) (env:find v))
     ((consp v)
-     (cond ((= '+ (car v)) (+ (car (cdr v)) (car (cdr (cdr v)))))
+     (cond ((= '+ (car v)) (sum (cdr v)))
            (t nil)))
     (t nil)))
 
