@@ -180,6 +180,12 @@ def parse(input)
     return parse_char(input)
   end
 
+  if input.c == "'"
+    input.readc
+    quoted = parse(input)
+    return [:QUOTE, quoted]
+  end
+
   return parse_symbol(input)
 end
 
