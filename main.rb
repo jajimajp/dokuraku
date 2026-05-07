@@ -99,8 +99,21 @@ def parse_char(input)
   return Char.new(c)
 end
 
+def consume_to_newline(input)
+  while !input.eof? && input.c != "\n"
+    input.readc
+  end
+
+  input.readc unless input.eof?
+end
+
 def parse(input)
   skip_spaces(input)
+
+  if input.c == ';'
+    consume_to_newline(input)
+    return parse(input)
+  end
 
   if isdigit(input.c)
     v = parse_int(input)

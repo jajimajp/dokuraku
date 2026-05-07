@@ -68,3 +68,6 @@ assert_value '#\\a', '#\\a' # escaping backslash
 
 assert 'a', '(putc #\\a)' # escaping backslash
 assert '123', '(write 123)'
+assert '123', '; A comment
+(; Comment in a list
+write 123)'
