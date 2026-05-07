@@ -99,6 +99,23 @@ def parse_char(input)
   return Char.new(c)
 end
 
+def parse_string(input)
+  # input.c must be '"'
+  input.readc
+
+  s = ''
+  while input.c != '"'
+    s += input.c
+    input.readc
+
+    raise "parse_string: unexpeced EOF" if input.eof?
+  end
+
+  # input.c must be '"'
+  input.readc
+  return s
+end
+
 def consume_to_newline(input)
   while !input.eof? && input.c != "\n"
     input.readc
@@ -124,6 +141,10 @@ def parse(input)
 
   if input.c == '('
     return parse_list(input)
+  end
+
+  if input.c == '"'
+    return parse_string(input)
   end
 
   if input.c == '#'
@@ -204,6 +225,10 @@ def initial_env
         putc args[0].value
         return
       end
+      if args[0].is_a? String
+        p args[0]
+        return
+      end
       puts args
     end,
   })
@@ -215,6 +240,10 @@ def eval(env, value)
   end
 
   if Char.is_char value
+    return value
+  end
+
+  if value.is_a? String
     return value
   end
 
@@ -278,6 +307,11 @@ def print(value)
 
   if Char.is_char value
     puts "\#\\#{value.value}"
+    return
+  end
+
+  if value.is_a? String
+    p value
     return
   end
 
