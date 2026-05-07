@@ -207,6 +207,13 @@ def initial_env
   Env.new({
     :t => :t,
     :nil => nil,
+    :not => lambda do |args|
+      if args[0].nil?
+        :t
+      else
+        nil
+      end
+    end,
     :+ => ->(args) { args.sum },
     :- => lambda do |args|
       return -1 * args[0] if args.length == 1
