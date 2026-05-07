@@ -48,10 +48,24 @@
 (defun read-int ()
   (read-int' (char-to-number *input-char*)))
 
+(defun reverse' (acc ls)
+  (if ls
+    (reverse' (cons (car ls) acc) (cdr ls))
+    acc))
+(defun reverse (ls) (reverse' nil ls))
+(defun read-symbol-chars-rev (acc)
+  (if (eofp) acc
+    (cond ((char= *input-char* #\ ) acc)
+          ((char= *input-char* #\Newline) acc)
+          ((char= *input-char* #\)) acc)
+          (t (progn
+               (defparameter c *input-char*)
+               (read-next)
+               (read-symbol-chars-rev (cons c acc)))))))
 (defun read-symbol ()
-  ; TODO: multiple characters
   (progn
-    (defparameter ret (intern (string-upcase (string *input-char*))))
+    (defparameter chars (reverse (read-symbol-chars-rev nil)))
+    (defparameter ret (intern (string-upcase (concatenate 'string chars))))
     (read-next)
     ret))
 
@@ -67,6 +81,7 @@
   ; TODO: use assoc list
   (cond
     ((= t sym) t)
+    ((= 'sym sym) 1) ; TODO: debug
     (t nil)))
 
 (defun eval (v)
@@ -75,11 +90,16 @@
     ((symbolp v) (env:find v))
     (t nil)))
 
+(defun print-value (v)
+  (if v
+    (write v)
+    (princ "NIL")))
+
 (defun loop ()
   (progn
     (defparameter v (read))
     (if v
-      (progn (write (eval v)) (loop))
+      (progn (print-value (eval v)) (loop))
       nil)))
 
 (loop)
