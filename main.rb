@@ -72,20 +72,30 @@ end
 
 class Env
   # @param init - Hash from symbol to lisp value.
-  def initialize(init = {})
+  def initialize(init = {}, fallback = nil)
     @v = init
+    @fallback = fallback
   end
 
-  def defined?(sym)
-    @v.has_key? sym
+  def has?(sym)
+    @v.has_key?(sym) || @fallback&.has?(sym)
   end
 
   def find(sym)
-    @v[sym]
+    return @v[sym] if @v.has_key?(sym)
+    @fallback&.find sym
   end
 
   def defparameter(sym, val)
-    @v[sym] = val
+    if @fallback.nil? || has?(sym)
+      @v[sym] = val
+      return
+    end
+    @fallback.defparameter(sym, val)
+  end
+
+  def to_s
+    @v.to_s
   end
 end
 
@@ -132,24 +142,24 @@ def eval(env, value)
     # defun special form
     if value[0] == :defun
       name = value[1]
-      args = value[2]
-      raise "defun: the second argument is not a list" unless args.is_a? Array
-      raise "defun: arguments are not implemented" if 0 < args.length
+      arg_vars = value[2]
+      raise "defun: the second argument is not a list" unless arg_vars.is_a? Array
       raise "defun: multiple bodies are not implemented" if 4 < value.length
       body = value[3]
-      env.defparameter(name, ->() { eval(env, body) })
+      env.defparameter(name, lambda do |args|
+        vars = arg_vars.zip(args).to_h
+        newenv = Env.new(vars, env)
+        eval(newenv, body)
+      end)
       return nil
     end
 
     args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
-    if !f.nil?
-      return f.call(args) if 0 < args.length
-      return f.call()
-    end
+    return f.call(args) if !f.nil?
   end
 
-  return env.find(value) if env.defined? value
+  return env.find(value) if env.has? value
 
   raise "unexpected value: #{value}"
 end
