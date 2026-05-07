@@ -51,13 +51,19 @@
 (defun read-int ()
   (read-int' (char-to-number *input-char*)))
 
-(defun loop ()
+(defun read ()
   (progn
     (skip-spaces)
-    (if (not (eof?))
-      (progn
-        (if (char-is-number? *input-char*) (write (read-int)) nil)
-        (loop))
+    (cond
+      ((eof?) nil)
+      ((char-is-number? *input-char*) (read-int))
+      (t nil))))
+
+(defun loop ()
+  (progn
+    (defparameter v (read))
+    (if v
+      (progn (write v) (loop))
       nil)))
 
 (loop)
