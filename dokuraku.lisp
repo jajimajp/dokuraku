@@ -26,7 +26,18 @@
 (defparameter *input-char* nil)
 (defun read-next ()
   (setf *input-char* (read-char nil)))
+(read-next) ; Read the first character
 (defun eof? () (not *input-char*))
+
+(defun skip-spaces ()
+  (cond
+    ((eof?) nil)
+    ; HACK: `#\ `means ' '.
+    ((char= *input-char* #\ ) (progn (read-next) (skip-spaces)))
+    ; HACK: Below newline character specifies `\n`.
+    ((char= *input-char* #\
+            ) (progn (read-next) (skip-spaces)))
+    (t nil)))
 
 (defun read-int' (n)
   (progn
@@ -42,7 +53,7 @@
 
 (defun loop ()
   (progn
-    (read-next)
+    (skip-spaces)
     (if (not (eof?))
       (progn
         (if (char-is-number? *input-char*) (write (read-int)) nil)
