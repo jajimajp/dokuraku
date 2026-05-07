@@ -216,6 +216,7 @@ def initial_env
     :<= => compfunc(->(a, b) { a <= b }),
     :>= => compfunc(->(a, b) { a >= b }),
     :"=" => compfunc(->(a, b) { a == b }),
+    :char= => compfunc(->(a, b) { a.value == b.value }),
     :"read-char" => lambda do |args|
       c = STDIN.getc
       return Char.new(c) unless c.nil?
