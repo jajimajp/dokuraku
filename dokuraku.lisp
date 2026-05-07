@@ -23,12 +23,22 @@
         ((char= c #\8) 8)
         ((char= c #\9) 9)))
 
+(defun read-int (n)
+  (progn
+    (defparameter c (read-char nil))
+    (if c
+      (if (char-is-number? c)
+        (read-int (+ (* 10 n) (char-to-number c)))
+        n)
+      n)))
+
+
 (defun loop ()
   (progn
     (defparameter c (read-char nil))
     (if c
       (progn
-        (if (char-is-number? c) (write (char-to-number c)) nil)
+        (if (char-is-number? c) (write (read-int (char-to-number c))) nil)
         (loop))
       nil)))
 

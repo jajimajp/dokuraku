@@ -16,3 +16,4 @@ end
 
 assert '5', '5'
 assert '5', ' 5 '
+assert '123', '123'
