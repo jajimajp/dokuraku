@@ -32,7 +32,6 @@
 (defun skip-spaces ()
   (cond
     ((eof?) nil)
-    ; HACK: `#\ `means ' '.
     ((char= *input-char* #\ ) (progn (read-next) (skip-spaces)))
     ; HACK: Below newline character specifies `\n`.
     ((char= *input-char* #\
