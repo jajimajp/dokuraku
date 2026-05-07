@@ -362,6 +362,13 @@ def initial_env
     # NOTE: This intern does much less than usual lisp interpreters do.
     :INTERN => ->(args) { args[0].to_sym },
     :CONCATENATE => ->(args) { concatenate(args) },
+    :LIST => lambda do |args|
+      res = nil
+      args.reverse.each do |arg|
+        res = Cons.new(arg, res)
+      end
+      res
+    end,
   })
 end
 
