@@ -391,6 +391,15 @@ def initial_env
       f = args[0]
       f.call(dest_list args[1])
     end,
+    :"MAKE-HASH-TABLE" => ->(args) { Hash.new },
+    :GETHASH => lambda do |args|
+      raise "gethash: not a hash: #{args[1]}" unless args[1].is_a? Hash
+      args[1][args[0]]
+    end,
+    :PUTHASH => lambda do |args|
+      raise "puthash: not a hash: #{args[2]}" unless args[2].is_a? Hash
+      args[2][args[0]] = args[1]
+    end,
   })
 end
 

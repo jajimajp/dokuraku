@@ -65,7 +65,6 @@ assert_value '3', '(progn
   (defparameter y 2)
   (+ x y))'
 assert_value '#\\a', '#\\a' # escaping backslash
-
 assert 'a', '(write-char #\\a)' # escaping backslash
 assert '123', '(write 123)'
 assert '123', '; A comment
@@ -107,3 +106,6 @@ assert_value '2', '(cadr (cons 1 (cons 2 nil)))'
 assert_value '3', '(caddr (cons 1 (cons 2 (cons 3 nil))))'
 assert_value '(1 . (2 . (3)))', '(list 1 2 3)'
 assert '3', "(defun add (x y) (+ x y)) (princ (apply #'add (cons 1 (cons 2 nil))))"
+assert '5', "(defparameter h (make-hash-table))
+            (puthash 'a 5 h)
+            (princ (gethash 'a h))"
