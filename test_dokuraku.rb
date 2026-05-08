@@ -55,3 +55,4 @@ assert_value '#\\a', '#\\a' # escape backslash
 assert_value '"str"', '"str"'
 assert_value '1', '(progn (defun f () 1) (f))'
 assert '5', '(defparameter v 5) (write v)'
+assert '4', '(defparameter double (lambda (x) (* x 2))) (write (double 2))'
