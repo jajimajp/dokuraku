@@ -494,6 +494,19 @@ def eval(env, value)
       return nil
     end
 
+    # lambda special form
+    if value[0] == :LAMBDA
+      arg_vars = value[1]
+      raise "lambda: the first argument is not a list" unless arg_vars.is_a? Array
+      raise "lambda: multiple bodies are not implemented" if 3 < value.length
+      body = value[2]
+      return lambda do |args|
+        vars = arg_vars.zip(args).to_h
+        newenv = Env.new(vars, env)
+        eval(newenv, body)
+      end
+    end
+
     args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
     return f.call(args) if !f.nil?
