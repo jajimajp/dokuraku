@@ -201,12 +201,26 @@
     (write v)
     (princ "NIL")))
 
+(defparameter *print-value-enabled* nil)
+(defun read-command-line-args (args)
+  (if args
+    (progn
+      (if (= "--print-value" (car args))
+        (setq *print-value-enabled* t)
+        nil)
+      (read-command-line-args (cdr args)))
+    nil))
+(read-command-line-args *command-line-arguments*)
+
 (defparameter env (initial-env))
 (defun loop ()
   (progn
     (defparameter v (read))
     (if v
-      (progn (print-value (eval env v)) (loop))
+      (let ((result (eval env v)))
+        (progn
+          (if *print-value-enabled* (print-value result) nil)
+          (loop)))
       nil)))
 
 (loop)
