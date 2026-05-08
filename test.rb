@@ -120,3 +120,5 @@ assert 'h', '(progn
                (defparameter *stream* (open "testdata-hello.txt"))
                (princ (read-char *stream* nil))
                (close *stream*))'
+assert_value 'T', '(stringp "str")'
+assert_value 'nil', '(stringp 1)'
