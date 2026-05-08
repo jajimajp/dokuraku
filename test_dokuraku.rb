@@ -63,3 +63,5 @@ assert_value 'SYM', '\'sym'
 assert_value '#\Newline', '#\Newline'
 assert 'a', '(write-char #\\a)' # escape backslash
 assert_value '1', '(let ((v 1)) v)'
+assert_value '1', '; comment
+1'

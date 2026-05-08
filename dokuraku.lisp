@@ -136,6 +136,12 @@
     (read-next) ; must be on the 1st character of string
     (concatenate 'string (parse-string-chars))))
 
+(defun consume-to-newline ()
+  (if (eofp)
+    nil
+    (cond ((char= #\Newline *input-char*) nil)
+          (t (progn (read-next) (consume-to-newline))))))
+
 (defun read ()
   (progn
     (skip-spaces)
@@ -145,6 +151,8 @@
       ((char= #\( *input-char*) (read-list))
       ((char= #\# *input-char*) (parse-char))
       ((char= #\" *input-char*) (parse-string))
+      ((char= #\; *input-char*)
+       (progn (consume-to-newline) (read)))
       ((char= #\' *input-char*)
        (progn
          (read-next)
