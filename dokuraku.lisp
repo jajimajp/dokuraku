@@ -103,10 +103,22 @@
   (progn ; must be at '#'
     (read-next) ; must be at '\'
     (read-next) ; must be at the character
+    ; Maybe #\Newline
     (let ((c *input-char*))
       (progn
         (read-next)
-        c))))
+        (if (char= *input-char* #\e)
+          ; Determine by the 2nd character.
+          ; If it is true, the rest must be 'wline'
+          (progn
+            (read-next) ; w
+            (read-next) ; l
+            (read-next) ; i
+            (read-next) ; n
+            (read-next) ; e
+            (read-next) ; The next character
+            #\Newline)
+          c)))))
 
 (defun parse-string-chars ()
   (if (eofp)
