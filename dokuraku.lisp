@@ -98,6 +98,15 @@
     (read-next)
     (read-list-r)))
 
+(defun parse-char ()
+  (progn ; must be at '#'
+    (read-next) ; must be at '\'
+    (read-next) ; must be at the character
+    (let ((c *input-char*))
+      (progn
+        (read-next)
+        c))))
+
 (defun read ()
   (progn
     (skip-spaces)
@@ -105,6 +114,7 @@
       ((eofp) nil)
       ((digitp *input-char*) (read-int))
       ((char= #\( *input-char*) (read-list))
+      ((char= #\# *input-char*) (parse-char))
       (t (read-symbol)))))
 
 (defun equal (a b) (= a b))
@@ -161,6 +171,7 @@
 (defun eval (env v)
   (cond
     ((numberp v) v)
+    ((characterp v) v)
     ((symbolp v) (env:find v env))
     ((consp v)
      (cond ((= 'defun (car v))

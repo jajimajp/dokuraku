@@ -49,3 +49,4 @@ assert 'LENGTH
      (length (cons 1 (cons 2 (cons 3 nil))))'
 assert '5
 NIL', '(write 5)'
+assert '#\\a', '#\\a' # escape backslash
