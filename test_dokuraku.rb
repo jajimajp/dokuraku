@@ -34,3 +34,5 @@ assert 'SUCC
 2', '(defun succ (x) (+ 1 x)) (succ 1)'
 assert 'ADD
 3', '(defun add (x y) (+ x y)) (add 1 2)'
+assert '1', '(if t 1 2)'
+assert '2', '(if nil 1 2)'

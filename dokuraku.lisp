@@ -1,5 +1,7 @@
 ; A Lisp interpreter
 
+(defun cadddr (ls) (car (cdr (cdr (cdr ls)))))
+
 (defun iter (f ls)
   (if ls
     (progn (f (car ls)) (iter f (cdr ls)))
@@ -159,6 +161,10 @@
                                          env)))
                            (eval newenv body)))))
                 (progn (env:defparameter name f env) name))))
+           ((= 'if (car v))
+            (if (eval env (cadr v))
+              (eval env (caddr v))
+              (eval env (cadddr v))))
            ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
            ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
            (t (let ((args (eval-list-elems env (cdr v))))
