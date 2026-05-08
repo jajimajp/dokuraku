@@ -146,7 +146,10 @@
                   (body (car (cdr (cdr (cdr v))))))
               (let ((f (lambda ()
                          ; TODO: handle args
-                         (eval env body))))
+                         (let ((newenv (env:new
+                                         (cons (cons 'x 1) nil) ; TODO: hard-coded
+                                         env)))
+                           (eval newenv body)))))
                 (progn (env:defparameter name f env) name))))
            ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
            ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
