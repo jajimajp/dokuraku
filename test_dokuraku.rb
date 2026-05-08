@@ -32,3 +32,5 @@ assert 'F
 13', '(defun f () 13)(f)'
 assert 'SUCC
 2', '(defun succ (x) (+ 1 x)) (succ 1)'
+assert 'ADD
+3', '(defun add (x y) (+ x y)) (add 1 2)'

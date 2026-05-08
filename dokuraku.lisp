@@ -5,6 +5,15 @@
     (progn (f (car ls)) (iter f (cdr ls)))
     nil))
 
+(defun zip (a b)
+  (if a
+    (let ((carb (if b (car b) nil))
+          (cdrb (if b (cdr b) nil)))
+      (cons
+        (cons (car a) carb)
+        (zip (cdr a) cdrb)))
+    nil))
+
 (defun digitp (c)
   (cond ((char= c #\1) t)
         ((char= c #\2) t)
@@ -144,10 +153,9 @@
             (let ((name (cadr v))
                   (args (caddr v))
                   (body (car (cdr (cdr (cdr v))))))
-              (let ((f (lambda ()
-                         ; TODO: handle args
+              (let ((f (lambda (argvars)
                          (let ((newenv (env:new
-                                         (cons (cons 'x 1) nil) ; TODO: hard-coded
+                                         (zip args argvars)
                                          env)))
                            (eval newenv body)))))
                 (progn (env:defparameter name f env) name))))
