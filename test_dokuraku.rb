@@ -41,3 +41,4 @@ assert 'TEST
 1', '(defun test (n) (if (< 0 n) 1 2)) (test 1)'
 assert 'FACT
 120', '(defun fact (n) (if (< 0 n) (* n (fact (- n 1))) 1)) (fact 5)'
+assert '(1 . 2)', '(cons 1 2)'

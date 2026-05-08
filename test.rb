@@ -112,3 +112,4 @@ assert '5', "(defparameter h (make-hash-table))
 assert_value '3', '(let ((x 1) (y 2)) (+ x y))'
 assert '5', '(defparameter x 5) (let ((x 1) (y 2)) (+ x y)) (princ x)'
 assert_value '3', '(let ((f (lambda (x) (+ x 2)))) (f 1))'
+assert '(1 . 2)', '(write (cons 1 2))'

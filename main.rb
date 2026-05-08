@@ -364,6 +364,10 @@ def initial_env
         p args[0]
         return
       end
+      if Cons.is_cons args[0]
+        princ args[0]
+        return
+      end
       puts args
     end,
     :PRINC => lambda do |args|
