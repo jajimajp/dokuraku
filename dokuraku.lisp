@@ -8,6 +8,11 @@
     (progn (f (car ls)) (iter f (cdr ls)))
     nil))
 
+(defun map (f ls)
+  (if ls
+    (cons (f (car ls)) (map f (cdr ls)))
+    nil))
+
 (defun zip (a b)
   (if a
     (let ((carb (if b (car b) nil))
@@ -226,6 +231,12 @@
                                 (zip args argvars)
                                 env)))
                   (eval newenv body)))))
+           ((= 'let (car v))
+            (let ((binds (cadr v))
+                  (body (caddr v)))
+              (let ((evaluated (map (lambda (bind)
+                                      (cons (car bind) (eval env (cadr bind)))) binds)))
+                (eval (env:new evaluated env) body))))
            ((= 'if (car v))
             (if (eval env (cadr v))
               (eval env (caddr v))
