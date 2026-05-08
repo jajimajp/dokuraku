@@ -66,6 +66,7 @@ assert_value '3', '(progn
   (+ x y))'
 assert_value '#\\a', '#\\a' # escaping backslash
 assert 'a', '(write-char #\\a)' # escaping backslash
+assert '#\\a', '(write #\\a)' # escaping backslash
 assert '123', '(write 123)'
 assert '123', '; A comment
 (; Comment in a list

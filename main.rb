@@ -357,7 +357,11 @@ def initial_env
     end,
     :WRITE => lambda do |args|
       if Char.is_char args[0]
-        putc args[0].value
+        if args[0].value == "\n"
+          print "\#\\Newline"
+          return
+        end
+        print "\#\\#{args[0].value}"
         return
       end
       if args[0].is_a? String
