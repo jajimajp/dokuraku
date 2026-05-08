@@ -386,6 +386,10 @@ def initial_env
     :PRINC => lambda do |args|
       princ args[0]
     end,
+    :WARN => lambda do |args|
+      # Original function that prints to stderr
+      warn("#{args[0]}")
+    end,
     :NUMBERP => ->(args) { if args[0].is_a? Integer then t else nil end },
     :CHARACTERP => ->(args) { if Char.is_char args[0] then t else nil end },
     :SYMBOLP => ->(args) { if args[0].is_a? Symbol then t else nil end },

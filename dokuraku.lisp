@@ -194,7 +194,9 @@
             (- (eval env (cadr v)) (sum (eval-list-elems env (cddr v)))))
            ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
            (t (let ((args (eval-list-elems env (cdr v))))
-                (apply (env:find (car v) env) (cons args nil))))))
+                (if (env:find (car v) env)
+                  (apply (env:find (car v) env) (cons args nil))
+                  (progn (warn "eval: not found") (warn (car v))))))))
     (t nil)))
 
 (defun print-value (v)
