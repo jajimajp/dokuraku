@@ -27,3 +27,6 @@ assert 'T', '(= 1 1)'
 assert 'NIL', '(= 1 2)'
 assert 'T', '(< 1 2)'
 assert 'NIL', '(< 1 1)'
+assert 'F', '(defun f () (+ 1 2))'
+assert 'F
+13', '(defun f () 13)(f)'

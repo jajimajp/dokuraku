@@ -66,7 +66,6 @@
   (progn
     (defparameter chars (reverse (read-symbol-chars-rev nil)))
     (defparameter ret (intern (string-upcase (concatenate 'string chars))))
-    (read-next)
     ret))
 
 (defun read-list-r ()
@@ -101,6 +100,8 @@
     h))
 (defun env:find (sym env)
   (gethash sym env))
+(defun env:defparameter (sym val env)
+  (puthash sym val env))
 
 (defun sum (ls)
   (if ls
@@ -122,7 +123,15 @@
     ((numberp v) v)
     ((symbolp v) (env:find v env))
     ((consp v)
-     (cond ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
+     (cond ((= 'defun (car v))
+            (let ((name (cadr v))
+                  (args (caddr v))
+                  (body (car (cdr (cdr (cdr v))))))
+              (let ((f (lambda ()
+                         ; TODO: handle args
+                         (eval env body))))
+                (progn (env:defparameter name f env) name))))
+           ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
            ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
            (t (apply (env:find (car v) env) (eval-list-elems env (cdr v))))))
     (t nil)))
