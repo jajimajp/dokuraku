@@ -203,6 +203,10 @@
             (if (eval env (cadr v))
               (eval env (caddr v))
               (eval env (cadddr v))))
+           ((= 'defparameter (car v))
+            (let ((name (cadr v))
+                  (val (eval env (caddr v))))
+              (env:defparameter name val env)))
            ((= 'progn (car v))
             (progn
               (defparameter aux
