@@ -1,12 +1,5 @@
 ; A Lisp interpreter
 
-(defun assoc (k ls)
-  (if ls
-    (if (= k (car (car ls)))
-      (cdr (car ls))
-      (assoc k (cdr ls)))
-    nil))
-
 (defun digitp (c)
   (cond ((char= c #\1) t)
         ((char= c #\2) t)
@@ -100,12 +93,14 @@
 (defun lessthan (a b) (< a b))
 
 (defun initial-env ()
-  (list (cons 't t)
-        (cons '= equal)
-        (cons '< lessthan)
-  ))
+  (progn
+    (defparameter h (make-hash-table))
+    (puthash 't t h)
+    (puthash '= equal h)
+    (puthash '< lessthan h)
+    h))
 (defun env:find (sym env)
-  (assoc sym env))
+  (gethash sym env))
 
 (defun sum (ls)
   (if ls
