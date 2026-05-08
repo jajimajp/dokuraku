@@ -1,5 +1,6 @@
 ; A Lisp interpreter
 
+(defun cddr (ls) (cdr (cdr ls)))
 (defun cadddr (ls) (car (cdr (cdr (cdr ls)))))
 
 (defun iter (f ls)
@@ -17,7 +18,8 @@
     nil))
 
 (defun digitp (c)
-  (cond ((char= c #\1) t)
+  (cond ((char= c #\0) t)
+        ((char= c #\1) t)
         ((char= c #\2) t)
         ((char= c #\3) t)
         ((char= c #\4) t)
@@ -29,7 +31,8 @@
         (t nil)))
 
 (defun char-to-number (c)
-  (cond ((char= c #\1) 1)
+  (cond ((char= c #\0) 0)
+        ((char= c #\1) 1)
         ((char= c #\2) 2)
         ((char= c #\3) 3)
         ((char= c #\4) 4)
@@ -127,7 +130,12 @@
             alist)
       (cons hash fallback))))
 (defun env:find (sym env)
-  (gethash sym (car env)))
+  (let ((v (gethash sym (car env))))
+    (if v
+      v
+      (if (cdr env)
+        (env:find sym (cdr env))
+        nil))))
 (defun env:defparameter (sym val env)
   (puthash sym val (car env)))
 
@@ -166,6 +174,8 @@
               (eval env (caddr v))
               (eval env (cadddr v))))
            ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
+           ((= '- (car v))
+            (- (eval env (cadr v)) (sum (eval-list-elems env (cddr v)))))
            ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
            (t (let ((args (eval-list-elems env (cdr v))))
                 (apply (env:find (car v) env) (cons args nil))))))
