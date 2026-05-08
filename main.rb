@@ -233,13 +233,13 @@ class Env
     @fallback.defparameter(sym, val)
   end
 
-  def setf(sym, val)
-    raise "setf: variable not defined: #{sym}" unless has? sym
+  def setq(sym, val)
+    raise "setq: variable not defined: #{sym}" unless has? sym
     if @v.has_key?(sym)
       @v[sym] = val
       return
     end
-    @fallback.setf(sym, val)
+    @fallback.setq(sym, val)
   end
 
   def to_s
@@ -448,11 +448,11 @@ def eval(env, value)
       return nil
     end
 
-    # setf special form
-    if value[0] == :SETF
+    # setq special form
+    if value[0] == :SETQ
       k = value[1]
       v = eval(env, value[2])
-      env.setf(k, v)
+      env.setq(k, v)
       return nil
     end
 
