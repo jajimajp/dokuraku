@@ -128,6 +128,11 @@
       ((char= #\( *input-char*) (read-list))
       ((char= #\# *input-char*) (parse-char))
       ((char= #\" *input-char*) (parse-string))
+      ((char= #\' *input-char*)
+       (progn
+         (read-next)
+         (let ((v (read)))
+           (list 'quote v))))
       (t (read-symbol)))))
 
 (defun equal (a b) (= a b))
