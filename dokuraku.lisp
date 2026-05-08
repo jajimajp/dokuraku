@@ -99,13 +99,13 @@
 (defun equal (a b) (= a b))
 (defun lessthan (a b) (< a b))
 
-(defparameter *initial-env*
+(defun initial-env ()
   (list (cons 't t)
         (cons '= equal)
         (cons '< lessthan)
   ))
-(defun env:find (sym)
-  (assoc sym *initial-env*))
+(defun env:find (sym env)
+  (assoc sym env))
 
 (defun sum (ls)
   (if ls
@@ -117,19 +117,19 @@
     (* (car ls) (multiply (cdr ls)))
     1))
 
-(defun eval-list-elems (ls)
+(defun eval-list-elems (env ls)
   (if ls
-    (cons (eval (car ls)) (eval-list-elems (cdr ls)))
+    (cons (eval env (car ls)) (eval-list-elems env (cdr ls)))
     nil))
 
-(defun eval (v)
+(defun eval (env v)
   (cond
     ((numberp v) v)
-    ((symbolp v) (env:find v))
+    ((symbolp v) (env:find v env))
     ((consp v)
-     (cond ((= '+ (car v)) (sum (eval-list-elems (cdr v))))
-           ((= '* (car v)) (multiply (eval-list-elems (cdr v))))
-           (t (apply (env:find (car v)) (eval-list-elems (cdr v))))))
+     (cond ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
+           ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
+           (t (apply (env:find (car v) env) (eval-list-elems env (cdr v))))))
     (t nil)))
 
 (defun print-value (v)
@@ -137,11 +137,12 @@
     (write v)
     (princ "NIL")))
 
+(defparameter env (initial-env))
 (defun loop ()
   (progn
     (defparameter v (read))
     (if v
-      (progn (print-value (eval v)) (loop))
+      (progn (print-value (eval env v)) (loop))
       nil)))
 
 (loop)
