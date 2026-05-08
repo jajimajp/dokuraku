@@ -116,3 +116,7 @@ assert_value '3', '(let ((f (lambda (x) (+ x 2)))) (f 1))'
 assert '(1 . 2)', '(write (cons 1 2))'
 assert_value 'T', '(characterp #\\a)' # escaping backslash
 assert_value 'nil', '(characterp 1)'
+assert 'h', '(progn
+               (defparameter *stream* (open "testdata-hello.txt"))
+               (princ (read-char *stream* nil))
+               (close *stream*))'

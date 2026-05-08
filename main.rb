@@ -351,13 +351,14 @@ def initial_env
     :"=" => compfunc(->(a, b) { a == b }),
     :CHAR= => compfunc(->(a, b) { a.value == b.value }),
     :"READ-CHAR" => lambda do |args|
-      c = STDIN.getc
+      stream = STDIN
+      stream = args[0] if 1 < args.length && !args[0].nil?
+      c = stream.getc
       return Char.new(c) unless c.nil?
-      if args.length == 1 && args[0] == nil # nil specified
-        return nil
-      else
-        raise "read-char: EOF"
+      if 2 <= args.length
+        return args[1]
       end
+      raise "read-char: EOF"
     end,
     :"WRITE-CHAR" => lambda do |args|
       raise "write-char: not a char: #{args[0]}" unless Char.is_char args[0]
@@ -416,6 +417,13 @@ def initial_env
     :PUTHASH => lambda do |args|
       raise "puthash: not a hash: #{args[2]}" unless args[2].is_a? Hash
       args[2][args[0]] = args[1]
+    end,
+    :OPEN => lambda do |args|
+      raise "open: only supports reading" if 1 < args.length
+      File.open(args[0])
+    end,
+    :CLOSE => lambda do |args|
+      args[0].close
     end,
   })
 end

@@ -44,7 +44,7 @@
 
 (defparameter *input-char* nil)
 (defun read-next ()
-  (setq *input-char* (read-char nil)))
+  (setq *input-char* (read-char nil nil)))
 (read-next) ; Read the first character
 (defun eofp () (not *input-char*))
 
