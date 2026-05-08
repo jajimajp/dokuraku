@@ -120,7 +120,9 @@
      (cons (cons '= (binop-to-single equal))
      (cons (cons '< (binop-to-single lessthan))
      (cons (cons 'cons (lambda (args) (cons (car args) (cadr args))))
-     nil))))
+     (cons (cons 'car (lambda (args) (car (car args))))
+     (cons (cons 'cdr (lambda (args) (cdr (car args))))
+     nil))))))
     nil))
 
 (defun env:new (alist fallback)
