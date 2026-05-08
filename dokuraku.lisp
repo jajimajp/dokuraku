@@ -1,5 +1,10 @@
 ; A Lisp interpreter
 
+(defun iter (f ls)
+  (if ls
+    (progn (f (car ls)) (iter f (cdr ls)))
+    nil))
+
 (defun digitp (c)
   (cond ((char= c #\1) t)
         ((char= c #\2) t)
@@ -96,16 +101,24 @@
     (f (car args) (cadr args))))
 
 (defun initial-env ()
-  (progn
-    (defparameter h (make-hash-table))
-    (puthash 't t h)
-    (puthash '= (binop-to-single equal) h)
-    (puthash '< (binop-to-single lessthan) h)
-    h))
+  (env:new
+    (cons (cons 't t)
+     (cons (cons '= (binop-to-single equal))
+     (cons (cons '< (binop-to-single lessthan))
+     nil)))
+    nil))
+
+(defun env:new (alist fallback)
+  (let ((hash (make-hash-table)))
+    (progn
+      (iter (lambda (pair)
+              (puthash (car pair) (cdr pair) hash))
+            alist)
+      (cons hash fallback))))
 (defun env:find (sym env)
-  (gethash sym env))
+  (gethash sym (car env)))
 (defun env:defparameter (sym val env)
-  (puthash sym val env))
+  (puthash sym val (car env)))
 
 (defun sum (ls)
   (if ls
