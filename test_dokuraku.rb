@@ -53,3 +53,4 @@ assert '3', '(defun length (ls) (if ls (+ 1 (length (cdr ls))) 0))
 assert '5', '(write 5)'
 assert_value '#\\a', '#\\a' # escape backslash
 assert_value '"str"', '"str"'
+assert_value '1', '(progn (defun f () 1) (f))'

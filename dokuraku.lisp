@@ -203,6 +203,18 @@
             (if (eval env (cadr v))
               (eval env (caddr v))
               (eval env (cadddr v))))
+           ((= 'progn (car v))
+            (progn
+              (defparameter aux
+                (lambda (ls)
+                  (if ls
+                    (if (cdr ls)
+                      (progn
+                        (eval env (car ls))
+                        (aux (cdr ls)))
+                      (eval env (car ls)))
+                    nil)))
+              (aux (cdr v))))
            ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
            ((= '- (car v))
             (- (eval env (cadr v)) (sum (eval-list-elems env (cddr v)))))
