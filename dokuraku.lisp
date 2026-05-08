@@ -204,6 +204,12 @@
         nil))))
 (defun env:defparameter (sym val env)
   (puthash sym val (car env)))
+(defun env:setq (sym val env)
+  (if (cdr env)
+    (if (env:find sym (car env))
+      (puthash sym val (car env))
+      (env:setq sym val (cdr env)))
+    (puthash sym val (car env))))
 
 (defun sum (ls)
   (if ls
@@ -260,6 +266,8 @@
             (let ((name (cadr v))
                   (val (eval env (caddr v))))
               (env:defparameter name val env)))
+           ((= 'setq (car v))
+            (env:setq (cadr v) (eval env (caddr v)) env))
            ((= 'progn (car v))
             (progn
               (defparameter aux

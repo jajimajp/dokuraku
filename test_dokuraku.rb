@@ -65,3 +65,4 @@ assert 'a', '(write-char #\\a)' # escape backslash
 assert_value '1', '(let ((v 1)) v)'
 assert_value '1', '; comment
 1'
+assert '1', '(defparameter x 2) (setq x 1) (write x)'
