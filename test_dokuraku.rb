@@ -44,3 +44,6 @@ assert 'FACT
 assert '(1 . 2)', '(cons 1 2)'
 assert '1', '(car (cons 1 2))'
 assert '2', '(cdr (cons 1 2))'
+assert 'LENGTH
+3', '(defun length (ls) (if ls (+ 1 (length (cdr ls))) 0))
+     (length (cons 1 (cons 2 (cons 3 nil))))'
