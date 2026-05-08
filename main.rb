@@ -289,6 +289,14 @@ def dest_list(ls)
   res
 end
 
+def make_list(arr)
+  res = nil
+  arr.each do |elem|
+    res = Cons.new(elem, res)
+  end
+  res
+end
+
 def initial_env
   Env.new({
     :T => t,
@@ -565,9 +573,21 @@ end
 
 print_value_enabled = false
 file = ''
+# ARGV which is passed to internal interpreting process
+# accessed via `*command-line-arguments*` global parameter.
+argv_to_pass = []
+reading_argv_to_pass = false
 ARGV.each do |arg|
+  if reading_argv_to_pass
+    argv_to_pass << arg
+    next
+  end
   if arg == '--print-value'
     print_value_enabled = arg
+    next
+  end
+  if arg == '--'
+    reading_argv_to_pass = true
     next
   end
   file = arg
@@ -580,6 +600,7 @@ else
 end
 
 env = initial_env
+env.defparameter("*COMMAND-LINE-ARGUMENTS*".to_sym, make_list(argv_to_pass))
 loop do
   value = parse input
   break if value.nil?
