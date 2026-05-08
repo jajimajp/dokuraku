@@ -1,5 +1,5 @@
-(defparameter *list1* (cons 'a (cons 'b (cons 'c nil))))
-(defparameter *list2* (cons 1 (cons 2 (cons 3 (cons 4 nil)))))
+(defparameter *list1* (list 'a 'b 'c))
+(defparameter *list2* (list 1 2 3 4))
 
 (defun zip (a b)
   (if a

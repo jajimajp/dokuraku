@@ -116,13 +116,13 @@
 
 (defun initial-env ()
   (env:new
-    (cons (cons 't t)
-     (cons (cons '= (binop-to-single equal))
-     (cons (cons '< (binop-to-single lessthan))
-     (cons (cons 'cons (lambda (args) (cons (car args) (cadr args))))
-     (cons (cons 'car (lambda (args) (car (car args))))
-     (cons (cons 'cdr (lambda (args) (cdr (car args))))
-     nil))))))
+    (list
+      (cons 't t)
+      (cons '= (binop-to-single equal))
+      (cons '< (binop-to-single lessthan))
+      (cons 'cons (lambda (args) (cons (car args) (cadr args))))
+      (cons 'car (lambda (args) (car (car args))))
+      (cons 'cdr (lambda (args) (cdr (car args)))))
     nil))
 
 (defun env:new (alist fallback)
@@ -165,7 +165,7 @@
      (cond ((= 'defun (car v))
             (let ((name (cadr v))
                   (args (caddr v))
-                  (body (car (cdr (cdr (cdr v))))))
+                  (body (cadddr v)))
               (let ((f (lambda (argvars)
                          (let ((newenv (env:new
                                          (zip args argvars)
