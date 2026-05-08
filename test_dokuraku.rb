@@ -52,3 +52,4 @@ assert '3', '(defun length (ls) (if ls (+ 1 (length (cdr ls))) 0))
              (write (length (cons 1 (cons 2 (cons 3 nil)))))'
 assert '5', '(write 5)'
 assert_value '#\\a', '#\\a' # escape backslash
+assert_value '"str"', '"str"'

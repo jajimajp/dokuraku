@@ -108,6 +108,17 @@
         (read-next)
         c))))
 
+(defun parse-string-chars ()
+  (if (eofp)
+    nil
+    (if (char= *input-char* #\")
+      (progn (read-next) nil)
+      (cons *input-char* (progn (read-next) (parse-string-chars))))))
+(defun parse-string ()
+  (progn ; must be on '"'
+    (read-next) ; must be on the 1st character of string
+    (concatenate 'string (parse-string-chars))))
+
 (defun read ()
   (progn
     (skip-spaces)
@@ -116,6 +127,7 @@
       ((digitp *input-char*) (read-int))
       ((char= #\( *input-char*) (read-list))
       ((char= #\# *input-char*) (parse-char))
+      ((char= #\" *input-char*) (parse-string))
       (t (read-symbol)))))
 
 (defun equal (a b) (= a b))
@@ -173,6 +185,7 @@
   (cond
     ((numberp v) v)
     ((characterp v) v)
+    ((stringp v) v)
     ((symbolp v) (env:find v env))
     ((consp v)
      (cond ((= 'defun (car v))
