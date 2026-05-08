@@ -42,10 +42,11 @@
         ((char= c #\8) 8)
         ((char= c #\9) 9)))
 
+; Default value nil makes read-char reads from stdin.
+(defparameter *input-stream* nil)
 (defparameter *input-char* nil)
 (defun read-next ()
-  (setq *input-char* (read-char nil nil)))
-(read-next) ; Read the first character
+  (setq *input-char* (read-char *input-stream* nil)))
 (defun eofp () (not *input-char*))
 
 (defun skip-spaces ()
@@ -202,15 +203,19 @@
     (princ "NIL")))
 
 (defparameter *print-value-enabled* nil)
+(defparameter *read-from-filep* nil)
 (defun read-command-line-args (args)
   (if args
     (progn
-      (if (= "--print-value" (car args))
-        (setq *print-value-enabled* t)
-        nil)
+      (cond ((= "--print-value" (car args))
+             (setq *print-value-enabled* t))
+            (t (progn
+                 (setq *read-from-filep* t)
+                 (setq *input-stream* (open (car args))))))
       (read-command-line-args (cdr args)))
     nil))
 (read-command-line-args *command-line-arguments*)
+(read-next) ; Read the first character
 
 (defparameter env (initial-env))
 (defun loop ()
