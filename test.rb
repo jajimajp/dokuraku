@@ -109,3 +109,5 @@ assert '3', "(defun add (x y) (+ x y)) (princ (apply #'add (cons 1 (cons 2 nil))
 assert '5', "(defparameter h (make-hash-table))
             (puthash 'a 5 h)
             (princ (gethash 'a h))"
+assert_value '3', '(let ((x 1) (y 2)) (+ x y))'
+assert '5', '(defparameter x 5) (let ((x 1) (y 2)) (+ x y)) (princ x)'

@@ -449,6 +449,20 @@ def eval(env, value)
       return res
     end
 
+    # let special form
+    if value[0] == :LET
+      binds = value[1]
+      raise "let: the first parameter is not a list" unless binds.is_a? Array
+      raise "let: multiple bodies are not implemented" if 3 < value.length
+      body = value[2]
+      binds_ls = binds.map do |bind|
+        v = eval(env, bind[1])
+        [bind[0], v]
+      end
+      newenv = Env.new(binds_ls.to_h, env)
+      return eval(newenv, body)
+    end
+
     # defparameter special form
     if value[0] == :DEFPARAMETER
       k = value[1]
