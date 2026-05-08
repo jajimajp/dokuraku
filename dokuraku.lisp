@@ -1,5 +1,12 @@
 ; A Lisp interpreter
 
+(defun assoc (k ls)
+  (if ls
+    (if (= k (car (car ls)))
+      (cdr (car ls))
+      (assoc k (cdr ls)))
+    nil))
+
 (defun digitp (c)
   (cond ((char= c #\1) t)
         ((char= c #\2) t)
@@ -97,14 +104,8 @@
         (cons '= equal)
         (cons '< lessthan)
   ))
-(defun env:find' (ls sym)
-  (if ls
-    (if (= (car (car ls)) sym)
-      (cdr (car ls))
-      (env:find' (cdr ls) sym))
-    nil))
 (defun env:find (sym)
-  (env:find' *initial-env* sym))
+  (assoc sym *initial-env*))
 
 (defun sum (ls)
   (if ls
