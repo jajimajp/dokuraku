@@ -91,12 +91,16 @@
 (defun equal (a b) (= a b))
 (defun lessthan (a b) (< a b))
 
+(defun binop-to-single (f)
+  (lambda (args)
+    (f (car args) (cadr args))))
+
 (defun initial-env ()
   (progn
     (defparameter h (make-hash-table))
     (puthash 't t h)
-    (puthash '= equal h)
-    (puthash '< lessthan h)
+    (puthash '= (binop-to-single equal) h)
+    (puthash '< (binop-to-single lessthan) h)
     h))
 (defun env:find (sym env)
   (gethash sym env))
@@ -133,7 +137,8 @@
                 (progn (env:defparameter name f env) name))))
            ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
            ((= '* (car v)) (multiply (eval-list-elems env (cdr v))))
-           (t (apply (env:find (car v) env) (eval-list-elems env (cdr v))))))
+           (t (let ((args (eval-list-elems env (cdr v))))
+                (apply (env:find (car v) env) (cons args nil))))))
     (t nil)))
 
 (defun print-value (v)
