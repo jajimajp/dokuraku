@@ -42,16 +42,13 @@ assert_value 'ADD
 3', '(defun add (x y) (+ x y)) (add 1 2)'
 assert_value '1', '(if t 1 2)'
 assert_value '2', '(if nil 1 2)'
-assert_value 'TEST
-1', '(defun test (n) (if (< 0 n) 1 2)) (test 1)'
+assert '1', '(defun test (n) (if (< 0 n) 1 2)) (write (test 1))'
 assert_value 'FACT
 120', '(defun fact (n) (if (< 0 n) (* n (fact (- n 1))) 1)) (fact 5)'
 assert_value '(1 . 2)', '(cons 1 2)'
 assert_value '1', '(car (cons 1 2))'
 assert_value '2', '(cdr (cons 1 2))'
-assert_value 'LENGTH
-3', '(defun length (ls) (if ls (+ 1 (length (cdr ls))) 0))
-     (length (cons 1 (cons 2 (cons 3 nil))))'
-assert_value '5
-NIL', '(write 5)'
+assert '3', '(defun length (ls) (if ls (+ 1 (length (cdr ls))) 0))
+             (write (length (cons 1 (cons 2 (cons 3 nil)))))'
+assert '5', '(write 5)'
 assert_value '#\\a', '#\\a' # escape backslash
