@@ -179,7 +179,13 @@
       (cons 'write (lambda (args) (write (car args))))
       (cons 'write-char (lambda (args) (write-char (car args))))
       (cons 'princ (lambda (args) (princ (car args))))
-      (cons 'list (lambda (args) args)))
+      (cons 'list (lambda (args) args))
+      (cons 'read-char (lambda (args)
+                         (progn
+                           (if (cadr args)
+                             (warn "read-char: other than stdin is not supported")
+                             nil)
+                           (read-char nil nil)))))
     nil))
 
 (defun env:new (alist fallback)
