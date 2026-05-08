@@ -147,7 +147,8 @@
       (cons 'car (lambda (args) (car (car args))))
       (cons 'cdr (lambda (args) (cdr (car args))))
       (cons 'write (lambda (args) (write (car args))))
-      (cons 'princ (lambda (args) (princ (car args)))))
+      (cons 'princ (lambda (args) (princ (car args))))
+      (cons 'list (lambda (args) args)))
     nil))
 
 (defun env:new (alist fallback)
