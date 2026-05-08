@@ -61,3 +61,4 @@ assert_value 'SYM', '(quote sym)'
 assert_value 'SYM', '(quote SYM)'
 assert_value 'SYM', '\'sym'
 assert_value '#\Newline', '#\Newline'
+assert 'a', '(write-char #\\a)' # escape backslash

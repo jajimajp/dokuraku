@@ -164,6 +164,7 @@
       (cons 'car (lambda (args) (car (car args))))
       (cons 'cdr (lambda (args) (cdr (car args))))
       (cons 'write (lambda (args) (write (car args))))
+      (cons 'write-char (lambda (args) (write-char (car args))))
       (cons 'princ (lambda (args) (princ (car args))))
       (cons 'list (lambda (args) args)))
     nil))
