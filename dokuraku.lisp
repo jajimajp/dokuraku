@@ -212,6 +212,7 @@
             (if (eval env (cadr v))
               (eval env (caddr v))
               (eval env (cadddr v))))
+           ((= 'quote (car v)) (cadr v))
            ((= 'defparameter (car v))
             (let ((name (cadr v))
                   (val (eval env (caddr v))))
