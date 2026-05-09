@@ -329,14 +329,17 @@
 (read-next) ; Read the first character
 
 (defparameter env (initial-env))
+(defparameter *quit* nil)
 (defun loop ()
-  (progn
-    (defparameter v (read))
-    (if v
-      (let ((result (eval env v)))
-        (progn
-          (if *print-value-enabled* (print-value result) nil)
-          (loop)))
-      nil)))
+  (if *quit*
+    nil
+    (progn
+      (defparameter v (read))
+      (if v
+        (let ((result (eval env v)))
+          (progn
+            (if *print-value-enabled* (print-value result) nil)
+            (loop)))
+        (setq *quit* t)))))
 
 (loop)
