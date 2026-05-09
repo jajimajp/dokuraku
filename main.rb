@@ -58,6 +58,42 @@ class Cons
     @l = l
     @r = r
   end
+
+  def [](key)
+    if key.is_a? Range
+      return @r if key.first == 1
+      raise "Cons: do not know how to handle: #{key}"
+    end
+    if 0 < key
+      @r[key - 1]
+    else
+      @l
+    end
+  end
+
+  def map
+    cur = self
+    res = []
+    while !cur.nil?
+      res << yield(cur.l)
+      cur = cur.r
+    end
+    make_list(res)
+  end
+
+  def to_arr
+    cur = self
+    res = []
+    while !cur.nil?
+      res << cur.l
+      cur = cur.r
+    end
+    res
+  end
+
+  def length
+    to_arr.length
+  end
 end
 
 def isdigit(c)
@@ -92,7 +128,7 @@ def parse_list(input)
   # input.c must be ')'
   input.readc
 
-  return list
+  return make_list(list)
 end
 
 def parse_symbol(input)
@@ -192,7 +228,7 @@ def parse(input)
   if input.c == "'"
     input.readc
     quoted = parse(input)
-    return [:QUOTE, quoted]
+    return make_list([:QUOTE, quoted])
   end
 
   return parse_symbol(input)
@@ -202,7 +238,7 @@ end
 # receives list arguments.
 def compfunc(test)
   lambda do |args|
-    for i in 0..args.length-2 do
+    for i in 0..args.to_arr.length-2 do
       return nil if not test.call(args[i], args[i+1])
     end
     return t
@@ -280,15 +316,6 @@ def concatenate(args)
   s
 end
 
-def dest_list(ls)
-  res = []
-  while Cons.is_cons ls
-    res << ls.l
-    ls = ls.r
-  end
-  res
-end
-
 def make_list(arr)
   res = nil
   arr.reverse.each do |elem|
@@ -331,15 +358,15 @@ def initial_env
         nil
       end
     end,
-    :+ => ->(args) { args.sum },
+    :+ => ->(args) { args.to_arr.sum },
     :- => lambda do |args|
-      return -1 * args[0] if args.length == 1
-      args[0] - args[1..].sum
+      return -1 * args[0] if args.to_arr.length == 1
+      args[0] - args[1..].to_arr.sum
     end,
-    :* => ->(args) { args.reduce(:*) },
+    :* => ->(args) { args.to_arr.reduce(:*) },
     :/ => lambda do |args|
       res = args[0]
-      args[1..].each do |arg|
+      args[1..].to_arr.each do |arg|
         res /= arg
       end
       res
@@ -381,7 +408,7 @@ def initial_env
         princ args[0]
         return
       end
-      puts args
+      puts args[0]
     end,
     :PRINC => lambda do |args|
       princ args[0]
@@ -405,14 +432,14 @@ def initial_env
     :CONCATENATE => ->(args) { concatenate(args) },
     :LIST => lambda do |args|
       res = nil
-      args.reverse.each do |arg|
+      args.to_arr.reverse.each do |arg|
         res = Cons.new(arg, res)
       end
       res
     end,
     :APPLY => lambda do |args|
       f = args[0]
-      f.call(dest_list args[1])
+      f.call(args[1])
     end,
     :"MAKE-HASH-TABLE" => ->(args) { Hash.new },
     :GETHASH => lambda do |args|
@@ -446,7 +473,7 @@ def eval(env, value)
     return value
   end
 
-  if value.is_a? Array
+  if Cons.is_cons value
     # quote special form
     if value[0] == :QUOTE
       return value[1]
@@ -463,7 +490,7 @@ def eval(env, value)
 
     # cond special form
     if value[0] == :COND
-      value[1..].each do |v|
+      value[1..].to_arr.each do |v|
         cond = eval(env, v[0])
         return eval(env, v[1]) unless cond.nil?
       end
@@ -473,7 +500,7 @@ def eval(env, value)
     # progn special form
     if value[0] == :PROGN
       res = nil
-      value[1..].each do |v|
+      value[1..].to_arr.each do |v|
         res = eval(env, v)
       end
       return res
@@ -482,10 +509,10 @@ def eval(env, value)
     # let special form
     if value[0] == :LET
       binds = value[1]
-      raise "let: the first parameter is not a list" unless binds.is_a? Array
+      raise "let: the first parameter is not a list" unless Cons.is_cons(binds)
       raise "let: multiple bodies are not implemented" if 3 < value.length
       body = value[2]
-      binds_ls = binds.map do |bind|
+      binds_ls = binds.to_arr.map do |bind|
         v = eval(env, bind[1])
         [bind[0], v]
       end
@@ -513,11 +540,19 @@ def eval(env, value)
     if value[0] == :DEFUN
       name = value[1]
       arg_vars = value[2]
-      raise "defun: the second argument is not a list" unless arg_vars.is_a? Array
-      raise "defun: multiple bodies are not implemented" if 4 < value.length
       body = value[3]
+      raise "defun: multiple bodies are not implemented" if 4 < value.length
+      # no args
+      if arg_vars.nil?
+        env.defparameter(name, lambda do |args|
+          newenv = Env.new({}, env)
+          eval(newenv, body)
+        end)
+        return nil
+      end
+      raise "defun: the second argument is not a list" unless Cons.is_cons(arg_vars)
       env.defparameter(name, lambda do |args|
-        vars = arg_vars.zip(args).to_h
+        vars = arg_vars.to_arr.zip(args.to_arr).to_h
         newenv = Env.new(vars, env)
         eval(newenv, body)
       end)
@@ -527,11 +562,11 @@ def eval(env, value)
     # lambda special form
     if value[0] == :LAMBDA
       arg_vars = value[1]
-      raise "lambda: the first argument is not a list" unless arg_vars.is_a? Array
+      raise "lambda: the first argument is not a list" unless Cons.is_cons(arg_vars)
       raise "lambda: multiple bodies are not implemented" if 3 < value.length
       body = value[2]
       return lambda do |args|
-        vars = arg_vars.zip(args).to_h
+        vars = arg_vars.to_arr.zip(args.to_arr).to_h
         newenv = Env.new(vars, env)
         eval(newenv, body)
       end
@@ -549,10 +584,14 @@ def eval(env, value)
       return nil
     end
 
-    args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
-    return f.call(args) if !f.nil?
-    raise "eval: unknown symbol: #{value[0]}"
+    raise "eval: unknown symbol: #{value[0]}" if f.nil?
+    if value[1..].nil?
+      return f.call(nil)
+    else
+      args = value[1..].map { |arg| eval(env, arg) }
+      return f.call(args)
+    end
   end
 
   return env.find(value) if env.has? value
