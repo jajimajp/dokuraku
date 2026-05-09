@@ -198,12 +198,10 @@
       (cons 'gethash (lambda (args) (gethash (car args) (cadr args))))
       (cons 'puthash (lambda (args) (puthash (car args) (cadr args) (caddr args))))
       (cons 'apply (lambda (args) (apply (car args) (cdr args))))
+      (cons 'open (lambda (args) (open (car args))))
+      (cons 'close (lambda (args) (close (car args))))
       (cons 'read-char (lambda (args)
-                         (progn
-                           (if (cadr args)
-                             (warn "read-char: other than stdin is not supported")
-                             nil)
-                           (read-char nil nil)))))
+                         (read-char (car args) (cadr args)))))
     nil))
 
 ; ### env ###

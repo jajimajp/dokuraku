@@ -92,3 +92,7 @@ assert_value 'T', '(consp (cons 1 2))'
 assert_value 'NIL', '(consp 2)'
 assert_value 'SYM', '(intern "SYM")'
 assert '3', "(defun add (x y) (+ x y)) (princ (apply add (cons 1 (cons 2 nil))))"
+assert 'h', '(progn
+               (defparameter *stream* (open "testdata-hello.txt"))
+               (princ (read-char *stream* nil))
+               (close *stream*))'
