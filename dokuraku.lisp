@@ -171,6 +171,9 @@
   (env:new
     (list
       (cons 't t)
+      (cons 'not (lambda (args) (not (car args))))
+      (cons 'numberp (lambda (args) (numberp (car args))))
+      (cons 'symbolp (lambda (args) (symbolp (car args))))
       (cons '= (binop-to-single equal))
       (cons 'char= (binop-to-single (lambda (a b) (char= a b))))
       (cons '< (binop-to-single lessthan))
