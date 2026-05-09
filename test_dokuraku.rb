@@ -87,3 +87,4 @@ assert_value 'T', '(characterp #\\a)' # escaping backslash
 assert_value 'NIL', '(characterp 1)'
 assert_value 'T', '(stringp "str")'
 assert_value 'NIL', '(stringp 1)'
+assert_value '"HELLO-WORLD"', '(string-upcase "Hello-wORLD")'

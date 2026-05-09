@@ -176,6 +176,7 @@
       (cons 'symbolp (lambda (args) (symbolp (car args))))
       (cons 'stringp (lambda (args) (stringp (car args))))
       (cons 'characterp (lambda (args) (characterp (car args))))
+      (cons 'string-upcase (lambda (args) (string-upcase (car args))))
       (cons '= (binop-to-single equal))
       (cons 'char= (binop-to-single (lambda (a b) (char= a b))))
       (cons '< (binop-to-single lessthan))
