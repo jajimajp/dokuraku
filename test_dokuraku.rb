@@ -83,3 +83,7 @@ assert '0
 1
 2', '(defparameter i 0) (while (< i 3) (progn (write i) (setq i (+ 1 i))))'
 assert_value '"str"', "(concatenate 'string (list #\\s #\\t #\\r))"
+assert_value 'T', '(characterp #\\a)' # escaping backslash
+assert_value 'NIL', '(characterp 1)'
+assert_value 'T', '(stringp "str")'
+assert_value 'NIL', '(stringp 1)'
