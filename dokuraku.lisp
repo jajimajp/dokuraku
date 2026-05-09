@@ -175,6 +175,7 @@
       (cons 'numberp (lambda (args) (numberp (car args))))
       (cons 'symbolp (lambda (args) (symbolp (car args))))
       (cons 'stringp (lambda (args) (stringp (car args))))
+      (cons 'consp (lambda (args) (consp (car args))))
       (cons 'characterp (lambda (args) (characterp (car args))))
       (cons 'string-upcase (lambda (args) (string-upcase (car args))))
       (cons '= (binop-to-single equal))
