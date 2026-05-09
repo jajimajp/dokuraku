@@ -328,11 +328,18 @@
 
 (defparameter *print-value-enabled* nil)
 (defparameter *read-from-filep* nil)
+(defparameter *reading-argv-to-pass* nil)
+(defparameter *argv-to-pass* nil)
+(defun push-argv-to-pass (arg)
+  (setq *argv-to-pass* (cons arg *argv-to-pass*)))
 (defun read-command-line-args (args)
   (if args
     (progn
-      (cond ((= "--print-value" (car args))
+      (cond (*reading-argv-to-pass* (push-argv-to-pass (car args)))
+            ((= "--print-value" (car args))
              (setq *print-value-enabled* t))
+            ((= "--" (car args))
+             (setq *reading-argv-to-pass* t))
             (t (progn
                  (setq *read-from-filep* t)
                  (setq *input-stream* (open (car args))))))
@@ -342,6 +349,7 @@
 (read-next) ; Read the first character
 
 (defparameter env (initial-env))
+(env:defparameter '*command-line-arguments* *argv-to-pass* env)
 (defparameter *quit* nil)
 (while (not *quit*)
        (progn
