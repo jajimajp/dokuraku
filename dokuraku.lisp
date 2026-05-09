@@ -183,6 +183,7 @@
       (cons 'write (lambda (args) (write (car args))))
       (cons 'write-char (lambda (args) (write-char (car args))))
       (cons 'princ (lambda (args) (princ (car args))))
+      (cons 'warn (lambda (args) (warn (car args))))
       (cons 'list (lambda (args) args))
       (cons 'make-hash-table (lambda (args) (make-hash-table)))
       (cons 'gethash (lambda (args) (gethash (car args) (cadr args))))
@@ -195,28 +196,32 @@
                            (read-char nil nil)))))
     nil))
 
+; ### env ###
+; store env as (<values hash>, <fallback : env>)
+; <values hash> is like [:k => (1 . nil), ...].
+; store value as (<v> . nil) to handle the case `nil` stored.
 (defun env:new (alist fallback)
   (let ((hash (make-hash-table)))
     (progn
       (iter (lambda (pair)
-              (puthash (car pair) (cdr pair) hash))
+              (puthash (car pair) (cons (cdr pair) nil) hash))
             alist)
       (cons hash fallback))))
 (defun env:find (sym env)
   (let ((v (gethash sym (car env))))
     (if v
-      v
+      (car v)
       (if (cdr env)
         (env:find sym (cdr env))
         nil))))
 (defun env:defparameter (sym val env)
-  (puthash sym val (car env)))
+  (puthash sym (cons val nil) (car env)))
 (defun env:setq (sym val env)
   (if (cdr env)
-    (if (env:find sym env)
-      (puthash sym val (car env))
+    (if (gethash sym (car env))
+      (puthash sym (cons val nil) (car env))
       (env:setq sym val (cdr env)))
-    (puthash sym val (car env))))
+    (puthash sym (cons val nil) (car env))))
 
 (defun sum (ls)
   (if ls
@@ -330,16 +335,10 @@
 
 (defparameter env (initial-env))
 (defparameter *quit* nil)
-(defun loop ()
-  (if *quit*
-    nil
-    (progn
-      (defparameter v (read))
-      (if v
-        (let ((result (eval env v)))
-          (progn
-            (if *print-value-enabled* (print-value result) nil)
-            (loop)))
-        (setq *quit* t)))))
-
-(loop)
+(while (not *quit*)
+       (progn
+         (defparameter v (read))
+         (if v
+           (let ((result (eval env v)))
+             (if *print-value-enabled* (print-value result) nil))
+           (setq *quit* t))))
