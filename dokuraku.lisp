@@ -229,6 +229,14 @@
     (cons (eval env (car ls)) (eval-list-elems env (cdr ls)))
     nil))
 
+(defun eval-cond (env conds)
+  (if conds
+    (let ((cond (car conds)))
+      (if (eval env (car cond))
+        (eval env (cadr cond))
+        (eval-cond env (cdr conds))))
+    nil))
+
 (defun eval (env v)
   (cond
     ((numberp v) v)
@@ -264,6 +272,7 @@
             (if (eval env (cadr v))
               (eval env (caddr v))
               (eval env (cadddr v))))
+           ((= 'cond (car v)) (eval-cond env (cdr v)))
            ((= 'quote (car v)) (cadr v))
            ((= 'defparameter (car v))
             (let ((name (cadr v))

@@ -69,3 +69,4 @@ assert '1', '(defparameter x 2) (setq x 1) (write x)'
 assert '5', "(defparameter h (make-hash-table))
             (puthash 'a 5 h)
             (princ (gethash 'a h))"
+assert_value '2', '(cond ((< 1 1) 1) ((= 1 1) 2) (t 3))'
