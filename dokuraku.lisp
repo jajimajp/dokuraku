@@ -185,6 +185,7 @@
       (cons 'car (lambda (args) (car (car args))))
       (cons 'cdr (lambda (args) (cdr (car args))))
       (cons 'concatenate (lambda (args) (apply concatenate args)))
+      (cons 'intern (lambda (args) (intern (car args))))
       (cons 'write (lambda (args) (write (car args))))
       (cons 'write-char (lambda (args) (write-char (car args))))
       (cons 'princ (lambda (args) (princ (car args))))
