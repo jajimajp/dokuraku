@@ -206,7 +206,7 @@
   (puthash sym val (car env)))
 (defun env:setq (sym val env)
   (if (cdr env)
-    (if (env:find sym (car env))
+    (if (env:find sym env)
       (puthash sym val (car env))
       (env:setq sym val (cdr env)))
     (puthash sym val (car env))))
