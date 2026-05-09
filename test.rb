@@ -122,3 +122,4 @@ assert 'h', '(progn
                (close *stream*))'
 assert_value 'T', '(stringp "str")'
 assert_value 'nil', '(stringp 1)'
+assert '3', '(defparameter i 0) (while (< i 3) (setq i (+ 1 i))) (write i)'

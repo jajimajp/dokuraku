@@ -296,6 +296,8 @@
                       (eval env (car ls)))
                     nil)))
               (aux (cdr v))))
+           ((= 'while (car v))
+            (while (eval env (cadr v)) (eval env (caddr v))))
            ((= '+ (car v)) (sum (eval-list-elems env (cdr v))))
            ((= '- (car v))
             (- (eval env (cadr v)) (sum (eval-list-elems env (cddr v)))))

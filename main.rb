@@ -537,6 +537,18 @@ def eval(env, value)
       end
     end
 
+    # (original) while special form
+    # implemented to avoid `stack level too deep` for main loop.
+    if value[0] == :WHILE
+      cond = value[1]
+      body = value[2]
+      raise "while: multiple bodies are not implemented" if 3 < value.length
+      while eval(env, cond)
+        eval(env, body)
+      end
+      return nil
+    end
+
     args = value[1..].map { |arg| eval(env, arg) }
     f = env.find(value[0])
     return f.call(args) if !f.nil?
