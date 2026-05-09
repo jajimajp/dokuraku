@@ -82,3 +82,4 @@ assert '3', '(defparameter i 0) (while (< i 3) (setq i (+ 1 i))) (write i)'
 assert '0
 1
 2', '(defparameter i 0) (while (< i 3) (progn (write i) (setq i (+ 1 i))))'
+assert_value '"str"', "(concatenate 'string (list #\\s #\\t #\\r))"
