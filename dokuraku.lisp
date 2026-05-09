@@ -180,6 +180,9 @@
       (cons 'write-char (lambda (args) (write-char (car args))))
       (cons 'princ (lambda (args) (princ (car args))))
       (cons 'list (lambda (args) args))
+      (cons 'make-hash-table (lambda (args) (make-hash-table)))
+      (cons 'gethash (lambda (args) (gethash (car args) (cadr args))))
+      (cons 'puthash (lambda (args) (puthash (car args) (cadr args) (caddr args))))
       (cons 'read-char (lambda (args)
                          (progn
                            (if (cadr args)

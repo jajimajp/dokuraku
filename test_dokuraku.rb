@@ -66,3 +66,6 @@ assert_value '1', '(let ((v 1)) v)'
 assert_value '1', '; comment
 1'
 assert '1', '(defparameter x 2) (setq x 1) (write x)'
+assert '5', "(defparameter h (make-hash-table))
+            (puthash 'a 5 h)
+            (princ (gethash 'a h))"
