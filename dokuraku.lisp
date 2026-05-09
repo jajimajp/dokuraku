@@ -194,6 +194,7 @@
       (cons 'make-hash-table (lambda (args) (make-hash-table)))
       (cons 'gethash (lambda (args) (gethash (car args) (cadr args))))
       (cons 'puthash (lambda (args) (puthash (car args) (cadr args) (caddr args))))
+      (cons 'apply (lambda (args) (apply (car args) (cdr args))))
       (cons 'read-char (lambda (args)
                          (progn
                            (if (cadr args)
