@@ -172,6 +172,7 @@
     (list
       (cons 't t)
       (cons '= (binop-to-single equal))
+      (cons 'char= (binop-to-single (lambda (a b) (char= a b))))
       (cons '< (binop-to-single lessthan))
       (cons 'cons (lambda (args) (cons (car args) (cadr args))))
       (cons 'car (lambda (args) (car (car args))))

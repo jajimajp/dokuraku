@@ -70,3 +70,5 @@ assert '5', "(defparameter h (make-hash-table))
             (puthash 'a 5 h)
             (princ (gethash 'a h))"
 assert_value '2', '(cond ((< 1 1) 1) ((= 1 1) 2) (t 3))'
+assert_value 'T', '(char= #\a #\a)'
+assert_value 'NIL', '(char= #\a #\z)'
