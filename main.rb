@@ -291,7 +291,7 @@ end
 
 def make_list(arr)
   res = nil
-  arr.each do |elem|
+  arr.reverse.each do |elem|
     res = Cons.new(elem, res)
   end
   res
